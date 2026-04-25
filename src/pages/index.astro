@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import GameCard from "../components/GameCard.astro";
+import { getCategoryGroups, getListedGames } from "../data/games";
+
+const listedGames = getListedGames();
+const featuredGames = listedGames.filter((game) => game.featured);
+const categories = getCategoryGroups();
+---
+<BaseLayout>
+  <section class="page-section">
+    <div class="container">
+      <div class="hero-panel hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Phase 1 Multi-Page Build</span>
+          <h1>GamesBrowse Is Becoming a Real Multi-Page Game Site</h1>
+          <p class="lead">
+            The old single-file launch page is now being migrated into a reusable site structure with
+            dedicated game routes, shared SEO, category pages, and iframe-ready templates.
+          </p>
+          <p class="muted">
+            Phase 1 keeps the footprint light while establishing the architecture needed for native
+            games, self-hosted HTML5 packages, and reviewed iframe aggregation sources.
+          </p>
+          <div class="button-row">
+            <a href="/games/" class="button button-primary">Browse Games</a>
+            <a href="/about/" class="button button-secondary">See the Direction</a>
+          </div>
+        </div>
+
+        <aside class="panel inset stack" aria-label="Build pillars">
+          <h2>Phase 1 Pillars</h2>
+          <div class="summary-grid">
+            <div class="summary-card">
+              <strong>Multi-Page SEO</strong>
+              <span>Dedicated routes for home, games, categories, and content pages.</span>
+            </div>
+            <div class="summary-card">
+              <strong>Reusable Layouts</strong>
+              <span>Shared shells for metadata, header, footer, cards, and game presentation.</span>
+            </div>
+            <div class="summary-card">
+              <strong>Data-Driven Games</strong>
+              <span>Game pages now originate from structured metadata instead of copied HTML.</span>
+            </div>
+            <div class="summary-card">
+              <strong>iframe-Ready</strong>
+              <span>Native and embedded games can share one consistent page template.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section tight">
+    <div class="container stack">
+      <div class="stack">
+        <span class="kicker">Featured Games</span>
+        <h2>Current Playable Surface</h2>
+      </div>
+      <div class="game-grid">
+        {featuredGames.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container two-col-grid">
+      <section class="panel stack">
+        <span class="kicker">Categories</span>
+        <h2>Structured for Expansion</h2>
+        <p class="muted">
+          Categories are now first-class routes. That gives the site a scalable way to group games,
+          build internal links, and support broader search intent beyond a single homepage.
+        </p>
+        <div class="tag-list">
+          {categories.map((category) => (
+            <a class="tag" href={`/categories/${category.slug}/`}>
+              {category.label}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="panel stack">
+        <span class="kicker">Architecture</span>
+        <h2>What Changed</h2>
+        <ul class="list">
+          <li>The project now has route templates instead of one hard-coded HTML page.</li>
+          <li>Game metadata is centralized, so new entries do not require copied page files.</li>
+          <li>The native game player and iframe shell now live under a shared page system.</li>
+        </ul>
+      </section>
+    </div>
+  </section>
+</BaseLayout>
+

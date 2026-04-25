@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reflex Lab Demo</title>
+  <style>
+    :root {
+      --bg: #0f1217;
+      --panel: rgba(17, 22, 31, 0.9);
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f4f7fb;
+      --muted: #98a3b8;
+      --accent: #7dd3fc;
+      --hot: #fb7185;
+      --good: #34d399;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(125, 211, 252, 0.2), transparent 30%),
+        linear-gradient(180deg, #0d1117 0%, #131a24 100%);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .shell {
+      width: min(860px, 100%);
+      padding: 28px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(125, 211, 252, 0.08);
+      border: 1px solid rgba(125, 211, 252, 0.18);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 48px);
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .arena {
+      display: grid;
+      gap: 18px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      min-width: 130px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .pad {
+      display: grid;
+      place-items: center;
+      min-height: 250px;
+      border-radius: 22px;
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.04));
+    }
+
+    .pulse {
+      width: 112px;
+      height: 112px;
+      border-radius: 999px;
+      background: rgba(125, 211, 252, 0.08);
+      border: 2px solid rgba(125, 211, 252, 0.4);
+      box-shadow: 0 0 0 0 rgba(125, 211, 252, 0.5);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .pulse.live {
+      transform: scale(1.08);
+      background: rgba(52, 211, 153, 0.14);
+      border-color: rgba(52, 211, 153, 0.5);
+      box-shadow: 0 0 0 24px rgba(52, 211, 153, 0.12);
+    }
+
+    .pulse.miss {
+      background: rgba(251, 113, 133, 0.16);
+      border-color: rgba(251, 113, 133, 0.56);
+      box-shadow: 0 0 0 24px rgba(251, 113, 133, 0.12);
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 0;
+      color: #081018;
+      background: var(--accent);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div>
+        <span class="eyebrow">GamesBrowse Lab</span>
+        <h1>Reflex Lab Demo</h1>
+      </div>
+      <p>Internal iframe validation page for Phase 1.</p>
+    </div>
+
+    <div class="arena">
+      <div class="stats">
+        <div class="stat">
+          <div class="label">State</div>
+          <div class="value" id="stateValue">Idle</div>
+        </div>
+        <div class="stat">
+          <div class="label">Hits</div>
+          <div class="value" id="hitsValue">0</div>
+        </div>
+        <div class="stat">
+          <div class="label">Misses</div>
+          <div class="value" id="missesValue">0</div>
+        </div>
+      </div>
+
+      <div class="pad">
+        <button class="pulse" id="pulseBtn" aria-label="Tap when the pulse is live"></button>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn">Start Sequence</button>
+        <button class="secondary" id="resetBtn">Reset</button>
+      </div>
+
+      <p id="messageValue">Press Start. Tap only when the pulse turns live.</p>
+    </div>
+  </div>
+
+  <script>
+    const pulseBtn = document.getElementById("pulseBtn");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const stateValue = document.getElementById("stateValue");
+    const hitsValue = document.getElementById("hitsValue");
+    const missesValue = document.getElementById("missesValue");
+    const messageValue = document.getElementById("messageValue");
+
+    let hits = 0;
+    let misses = 0;
+    let live = false;
+    let timeoutId = null;
+    let running = false;
+
+    function render() {
+      stateValue.textContent = running ? (live ? "Live" : "Waiting") : "Idle";
+      hitsValue.textContent = String(hits);
+      missesValue.textContent = String(misses);
+    }
+
+    function clearPulseState() {
+      pulseBtn.classList.remove("live");
+      pulseBtn.classList.remove("miss");
+    }
+
+    function schedulePulse() {
+      clearTimeout(timeoutId);
+      clearPulseState();
+      live = false;
+      render();
+
+      timeoutId = setTimeout(() => {
+        live = true;
+        pulseBtn.classList.add("live");
+        messageValue.textContent = "Now. Tap the pulse.";
+        render();
+
+        timeoutId = setTimeout(() => {
+          if (live) {
+            live = false;
+            misses += 1;
+            pulseBtn.classList.remove("live");
+            pulseBtn.classList.add("miss");
+            messageValue.textContent = "Missed the window. Try again.";
+            render();
+            schedulePulse();
+          }
+        }, 900);
+      }, 900 + Math.random() * 900);
+    }
+
+    function start() {
+      running = true;
+      messageValue.textContent = "Wait for the live pulse.";
+      render();
+      schedulePulse();
+    }
+
+    function reset() {
+      running = false;
+      live = false;
+      hits = 0;
+      misses = 0;
+      clearTimeout(timeoutId);
+      clearPulseState();
+      messageValue.textContent = "Press Start. Tap only when the pulse turns live.";
+      render();
+    }
+
+    startBtn.addEventListener("click", start);
+    resetBtn.addEventListener("click", reset);
+    pulseBtn.addEventListener("click", () => {
+      if (!running) return;
+
+      if (live) {
+        hits += 1;
+        live = false;
+        pulseBtn.classList.remove("live");
+        messageValue.textContent = "Clean hit. Waiting for the next pulse.";
+        render();
+        schedulePulse();
+        return;
+      }
+
+      misses += 1;
+      pulseBtn.classList.add("miss");
+      messageValue.textContent = "Too early. Wait for the live state.";
+      render();
+      setTimeout(() => pulseBtn.classList.remove("miss"), 220);
+    });
+
+    render();
+  </script>
+</body>
+</html>
+

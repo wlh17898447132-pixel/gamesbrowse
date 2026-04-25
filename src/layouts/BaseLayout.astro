@@ -1,0 +1,43 @@
+---
+import "../styles/global.css";
+import SEOHead from "../components/SEOHead.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { site } from "../data/site";
+
+const {
+  title = site.title,
+  description = site.description,
+  canonicalPath = "/",
+  image = "/og/default-share.svg",
+  type = "website",
+  noindex = false,
+  structuredData = []
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <SEOHead
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      image={image}
+      type={type}
+      noindex={noindex}
+    />
+    {structuredData.map((entry) => (
+      <script type="application/ld+json" set:html={JSON.stringify(entry)} />
+    ))}
+  </head>
+  <body>
+    <div class="site-shell">
+      <SiteHeader />
+      <main class="site-main">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+  </body>
+</html>
+

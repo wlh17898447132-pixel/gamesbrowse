@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GameCard from "../../components/GameCard.astro";
+import { getListedGames } from "../../data/games";
+
+const games = getListedGames();
+---
+<BaseLayout
+  title="Browse Browser Games | GamesBrowse"
+  description="Browse the GamesBrowse catalog, including native browser games and iframe-ready page templates."
+  canonicalPath="/games/"
+>
+  <section class="page-section">
+    <div class="container stack">
+      <div class="hero-panel stack">
+        <div class="breadcrumbs">
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Games</span>
+        </div>
+        <span class="eyebrow">Game Index</span>
+        <h1>Browse Games</h1>
+        <p class="lead">
+          This page is the first dedicated game listing route in the new site structure.
+        </p>
+      </div>
+
+      <div class="game-grid">
+        {games.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

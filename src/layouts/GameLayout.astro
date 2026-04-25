@@ -1,0 +1,208 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import GameCard from "../components/GameCard.astro";
+import GameEmbedFrame from "../components/GameEmbedFrame.astro";
+import RedLightChallengeGame from "../components/games/RedLightChallengeGame.astro";
+import { site } from "../data/site";
+
+const { game, relatedGames = [] } = Astro.props;
+const canonicalPath = `/games/${game.slug}/`;
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: site.url
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Games",
+        item: `${site.url}/games/`
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: game.title,
+        item: `${site.url}${canonicalPath}`
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    name: game.title,
+    url: `${site.url}${canonicalPath}`,
+    description: game.description,
+    genre: game.tags,
+    gamePlatform: ["Web Browser", "Mobile Web"],
+    applicationCategory: "Game",
+    operatingSystem: "Any",
+    publisher: {
+      "@type": "Organization",
+      name: "GamesBrowse"
+    }
+  }
+];
+---
+<BaseLayout
+  title={game.metaTitle}
+  description={game.metaDescription}
+  canonicalPath={canonicalPath}
+  type="article"
+  noindex={game.noindex}
+  structuredData={structuredData}
+>
+  <section class="page-section">
+    <div class="container">
+      <div class="hero-panel hero-grid">
+        <div class="hero-copy">
+          <div class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="/">Home</a>
+            <span aria-hidden="true">/</span>
+            <a href="/games/">Games</a>
+            <span aria-hidden="true">/</span>
+            <a href={`/categories/${game.category.slug}/`}>{game.category.label}</a>
+            <span aria-hidden="true">/</span>
+            <span>{game.title}</span>
+          </div>
+
+          <span class="eyebrow">{game.heroEyebrow}</span>
+          <h1>{game.title}</h1>
+          <p class="lead">{game.description}</p>
+          <p class="muted">{game.lead}</p>
+
+          <div class="button-row">
+            <a href="#play" class="button button-primary">Play Now</a>
+            <a href="/games/" class="button button-secondary">Browse Games</a>
+          </div>
+
+          <div class="tag-list">
+            {game.tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+        </div>
+
+        <aside class="panel inset stack" aria-label="Game summary">
+          <h2>Quick Summary</h2>
+          <div class="summary-grid">
+            {game.summary.map((item) => (
+              <div class="summary-card">
+                <strong>{item.label}</strong>
+                <span>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section tight" id="play">
+    <div class="container">
+      <div class="panel play-shell">
+        <div class="play-toolbar">
+          <div class="stack">
+            <span class="kicker">Playable Module</span>
+            <h2>Play in Your Browser</h2>
+          </div>
+          <div class="pill-row">
+            <span class="pill is-brand">{game.playMode}</span>
+            <span class="pill">{game.category.label}</span>
+          </div>
+        </div>
+
+        {game.playMode === "iframe" ? <GameEmbedFrame game={game} /> : <RedLightChallengeGame />}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section">
+    <div class="container content-grid">
+      <article class="panel stack">
+        <div class="stack">
+          <h2 class="section-title">About This Game</h2>
+          {game.overview.map((paragraph) => <p class="section-copy">{paragraph}</p>)}
+        </div>
+
+        <div class="two-col-grid">
+          <section class="panel inset stack">
+            <h3>How to Play</h3>
+            <ul class="list">
+              {game.instructions.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+
+          <section class="panel inset stack">
+            <h3>Controls</h3>
+            <ul class="list">
+              {game.controls.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+        </div>
+
+        <section class="panel inset stack">
+          <h3>Tips</h3>
+          <ul class="list">
+            {game.tips.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      </article>
+
+      <aside class="stack">
+        <section class="panel stack">
+          <h2>Game Info</h2>
+          <div class="info-table">
+            <div class="info-row">
+              <strong>Category</strong>
+              <span>{game.category.label}</span>
+            </div>
+            <div class="info-row">
+              <strong>Play Mode</strong>
+              <span>{game.playMode}</span>
+            </div>
+            <div class="info-row">
+              <strong>Tags</strong>
+              <span>{game.tags.join(", ")}</span>
+            </div>
+            {game.sourceName && (
+              <div class="info-row">
+                <strong>Source</strong>
+                <span>{game.sourceName}</span>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section class="panel stack">
+          <h2>FAQ</h2>
+          <div class="faq-list">
+            {game.faq.map((item) => (
+              <details class="faq-item">
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+  {relatedGames.length > 0 && (
+    <section class="page-section">
+      <div class="container stack">
+        <div class="stack">
+          <span class="kicker">Related Games</span>
+          <h2>Keep Browsing</h2>
+        </div>
+        <div class="game-grid">
+          {relatedGames.map((related) => <GameCard game={related} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import GameCard from "../../components/GameCard.astro";
+import { getCategoryGroups, getGamesByCategory } from "../../data/games";
+
+export function getStaticPaths() {
+  return getCategoryGroups().map((category) => ({
+    params: { slug: category.slug },
+    props: { category }
+  }));
+}
+
+const { category } = Astro.props;
+const games = getGamesByCategory(category.slug);
+---
+<BaseLayout
+  title={`${category.label} Games | GamesBrowse`}
+  description={`Browse ${category.label.toLowerCase()} games on GamesBrowse.`}
+  canonicalPath={`/categories/${category.slug}/`}
+>
+  <section class="page-section">
+    <div class="container stack">
+      <div class="hero-panel stack">
+        <div class="breadcrumbs">
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <span>Categories</span>
+          <span aria-hidden="true">/</span>
+          <span>{category.label}</span>
+        </div>
+        <span class="eyebrow">Category Page</span>
+        <h1>{category.label} Games</h1>
+        <p class="lead">
+          Category routes are now part of the site architecture, giving GamesBrowse a cleaner index
+          for search engines and a stronger way to cluster related games.
+        </p>
+      </div>
+
+      <div class="game-grid">
+        {games.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+

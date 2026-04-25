@@ -1,0 +1,22 @@
+---
+const { game } = Astro.props;
+const href = `/games/${game.slug}/`;
+const toneClass = game.thumbnailTone ? `tone-${game.thumbnailTone}` : "";
+const playModeLabel = game.playMode === "iframe" ? "iframe" : game.playMode;
+---
+<a href={href} class="game-card" aria-label={`Open ${game.title}`}>
+  <div class={`card-thumb ${toneClass}`.trim()}>
+    <div class="stack">
+      <small>{game.category.label}</small>
+      <h3>{game.shortTitle || game.title}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="badge-row">
+      <span class="badge is-brand">{game.category.label}</span>
+      <span class="badge">{playModeLabel}</span>
+    </div>
+    <p class="muted">{game.description}</p>
+  </div>
+</a>
+

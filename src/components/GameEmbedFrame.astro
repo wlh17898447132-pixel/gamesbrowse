@@ -1,0 +1,56 @@
+---
+const { game } = Astro.props;
+const frameShellId = `frame-shell-${game.slug}`;
+const frameRatio = (game.aspectRatio || "16:9").replace(":", " / ");
+---
+<div class="panel inset stack">
+  <div class="embed-toolbar">
+    <div class="pill-row">
+      <span class="pill is-brand">Source: {game.sourceName}</span>
+      <span class="pill">{game.licenseType}</span>
+    </div>
+    {game.allowFullscreen && (
+      <button
+        type="button"
+        class="game-button secondary"
+        data-frame-fullscreen={frameShellId}
+      >
+        Fullscreen
+      </button>
+    )}
+  </div>
+
+  <div class="embed-shell" id={frameShellId}>
+    <iframe
+      class="embed-frame"
+      style={`--frame-ratio: ${frameRatio};`}
+      src={game.embedUrl}
+      title={game.title}
+      loading="lazy"
+      allow={game.iframeAllow}
+      sandbox={game.iframeSandbox}
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen={game.allowFullscreen ? true : undefined}
+    ></iframe>
+  </div>
+
+  <p class="embed-note">
+    If the embedded game fails to load, open it at the source:
+    <a href={game.sourceUrl}> {game.sourceName}</a>.
+  </p>
+</div>
+
+<script is:inline>
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-frame-fullscreen]");
+    if (!trigger) return;
+
+    const targetId = trigger.getAttribute("data-frame-fullscreen");
+    const shell = document.getElementById(targetId);
+
+    if (shell && shell.requestFullscreen) {
+      shell.requestFullscreen();
+    }
+  });
+</script>
+
