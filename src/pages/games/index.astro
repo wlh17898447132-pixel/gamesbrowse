@@ -1,13 +1,22 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GameCard from "../../components/GameCard.astro";
-import { getListedGames } from "../../data/games";
+import { getCategoryCatalog, getListedGames } from "../../data/games";
 
 const games = getListedGames();
+const categories = getCategoryCatalog();
+
+const initialGames = games
+  .slice()
+  .sort((a, b) => {
+    if (a.featured !== b.featured) return Number(b.featured) - Number(a.featured);
+    if (a.popularRank !== b.popularRank) return b.popularRank - a.popularRank;
+    return a.title.localeCompare(b.title);
+  });
 ---
 <BaseLayout
-  title="Browse Browser Games | GamesBrowse"
-  description="Browse the GamesBrowse catalog, including native browser games and iframe-ready page templates."
+  title="All Games - GamesBrowse"
+  description="Browse all free online browser games on GamesBrowse and discover arcade, puzzle, racing, reflex, and casual games."
   canonicalPath="/games/"
 >
   <section class="page-section">
@@ -18,17 +27,155 @@ const games = getListedGames();
           <span aria-hidden="true">/</span>
           <span>Games</span>
         </div>
-        <span class="eyebrow">Game Index</span>
-        <h1>Browse Games</h1>
+        <span class="eyebrow">All Games</span>
+        <h1>Browse All Games</h1>
         <p class="lead">
-          This page is the first dedicated game listing route in the new site structure.
+          Explore the full GamesBrowse catalog, filter by category, and sort by featured picks,
+          newest entries, or title.
         </p>
       </div>
 
-      <div class="game-grid">
-        {games.map((game) => <GameCard game={game} />)}
+      <div class="panel catalog-toolbar stack">
+        <div class="catalog-toolbar-grid">
+          <label class="form-field">
+            <span>Search</span>
+            <input
+              type="search"
+              placeholder="Search games..."
+              data-search-input
+              aria-label="Search games"
+            />
+          </label>
+
+          <label class="form-field">
+            <span>Category</span>
+            <select data-category-filter aria-label="Filter by category">
+              <option value="all">All Categories</option>
+              {categories.map((category) => (
+                <option value={category.slug}>{category.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class="form-field">
+            <span>Sort</span>
+            <select data-sort-select aria-label="Sort games">
+              <option value="featured">Featured</option>
+              <option value="newest">Newest</option>
+              <option value="title">A-Z</option>
+            </select>
+          </label>
+        </div>
+
+        <p class="muted catalog-result-copy">
+          <strong data-results-count>{initialGames.length}</strong> games in the current catalog.
+        </p>
+      </div>
+
+      <div class="game-grid" data-games-grid>
+        {initialGames.map((game) => (
+          <div
+            data-game-item
+            data-title={game.title.toLowerCase()}
+            data-category={game.categorySlugs.join("|")}
+            data-featured={game.featured ? "1" : "0"}
+            data-created-at={game.createdAt}
+            data-short-description={(game.shortDescription || "").toLowerCase()}
+          >
+            <GameCard game={game} />
+          </div>
+        ))}
+      </div>
+
+      <div class="panel empty-state" data-empty-state hidden>
+        <h2>No games found</h2>
+        <p class="muted">Try another keyword or switch back to all categories.</p>
       </div>
     </div>
   </section>
-</BaseLayout>
 
+  <script is:inline>
+    const grid = document.querySelector("[data-games-grid]");
+    const searchInput = document.querySelector("[data-search-input]");
+    const categoryFilter = document.querySelector("[data-category-filter]");
+    const sortSelect = document.querySelector("[data-sort-select]");
+    const countTarget = document.querySelector("[data-results-count]");
+    const emptyState = document.querySelector("[data-empty-state]");
+
+    if (grid && searchInput && categoryFilter && sortSelect && countTarget && emptyState) {
+      const items = Array.from(grid.querySelectorAll("[data-game-item]"));
+      const params = new URLSearchParams(window.location.search);
+      const initialQuery = params.get("q") || "";
+      const initialCategory = params.get("category") || "all";
+      const initialSort = params.get("sort") || "featured";
+
+      searchInput.value = initialQuery;
+      categoryFilter.value = initialCategory;
+      sortSelect.value = initialSort;
+
+      const sorters = {
+        featured: (a, b) => {
+          const aFeatured = Number(a.dataset.featured || "0");
+          const bFeatured = Number(b.dataset.featured || "0");
+          if (aFeatured !== bFeatured) return bFeatured - aFeatured;
+
+          return (a.dataset.title || "").localeCompare(b.dataset.title || "");
+        },
+        newest: (a, b) =>
+          new Date(b.dataset.createdAt || "1970-01-01").getTime() -
+          new Date(a.dataset.createdAt || "1970-01-01").getTime(),
+        title: (a, b) => (a.dataset.title || "").localeCompare(b.dataset.title || "")
+      };
+
+      const updateUrl = (query, category, sort) => {
+        const next = new URL(window.location.href);
+
+        if (query) next.searchParams.set("q", query);
+        else next.searchParams.delete("q");
+
+        if (category && category !== "all") next.searchParams.set("category", category);
+        else next.searchParams.delete("category");
+
+        if (sort && sort !== "featured") next.searchParams.set("sort", sort);
+        else next.searchParams.delete("sort");
+
+        history.replaceState({}, "", next);
+      };
+
+      const applyFilters = () => {
+        const query = searchInput.value.trim().toLowerCase();
+        const category = categoryFilter.value;
+        const sort = sortSelect.value;
+
+        const visibleItems = items.filter((item) => {
+          const matchesQuery =
+            !query ||
+            (item.dataset.title || "").includes(query) ||
+            (item.dataset.shortDescription || "").includes(query) ||
+            (item.dataset.category || "").includes(query);
+
+          const matchesCategory =
+            category === "all" || (item.dataset.category || "").split("|").includes(category);
+
+          item.hidden = !(matchesQuery && matchesCategory);
+          return matchesQuery && matchesCategory;
+        });
+
+        visibleItems
+          .sort(sorters[sort] || sorters.featured)
+          .forEach((item) => {
+            grid.appendChild(item);
+          });
+
+        countTarget.textContent = String(visibleItems.length);
+        emptyState.hidden = visibleItems.length > 0;
+        updateUrl(query, category, sort);
+      };
+
+      searchInput.addEventListener("input", applyFilters);
+      categoryFilter.addEventListener("change", applyFilters);
+      sortSelect.addEventListener("change", applyFilters);
+      applyFilters();
+    }
+  </script>
+</BaseLayout>

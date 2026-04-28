@@ -1,7 +1,10 @@
 ---
+import { getGameFrameRatio, getGameIframeSrc } from "../data/games";
 const { game } = Astro.props;
 const frameShellId = `frame-shell-${game.slug}`;
-const frameRatio = (game.aspectRatio || "16:9").replace(":", " / ");
+const frameRatio = getGameFrameRatio(game).replace(":", " / ");
+const frameSrc = getGameIframeSrc(game);
+const sourceHref = game.gameDistributionUrl || game.iframeBaseUrl || "";
 ---
 <div class="panel inset stack">
   <div class="embed-toolbar">
@@ -20,24 +23,30 @@ const frameRatio = (game.aspectRatio || "16:9").replace(":", " / ");
     )}
   </div>
 
-  <div class="embed-shell" id={frameShellId}>
-    <iframe
-      class="embed-frame"
-      style={`--frame-ratio: ${frameRatio};`}
-      src={game.embedUrl}
-      title={game.title}
-      loading="lazy"
-      allow={game.iframeAllow}
-      sandbox={game.iframeSandbox}
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen={game.allowFullscreen ? true : undefined}
-    ></iframe>
+  <div class="game-frame-shell embed-shell" id={frameShellId} style={`--frame-ratio: ${frameRatio};`}>
+    {frameSrc ? (
+      <iframe
+        class="game-frame embed-frame"
+        src={frameSrc}
+        title={game.title}
+        loading="lazy"
+        allow={game.iframeAllow || "autoplay; fullscreen"}
+        sandbox={game.iframeSandbox}
+        scrolling="none"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    ) : (
+      <div class="game-frame-placeholder">Game is not available.</div>
+    )}
   </div>
 
-  <p class="embed-note">
-    If the embedded game fails to load, open it at the source:
-    <a href={game.sourceUrl}> {game.sourceName}</a>.
-  </p>
+  {sourceHref && (
+    <p class="embed-note">
+      If the embedded game fails to load, open it at the source:
+      <a href={sourceHref}> {game.sourceName}</a>.
+    </p>
+  )}
 </div>
 
 <script is:inline>

@@ -26,7 +26,7 @@ const {
       type={type}
       noindex={noindex}
     />
-    {structuredData.map((entry) => (
+    {!noindex && structuredData.map((entry) => (
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
   </head>

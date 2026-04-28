@@ -2,11 +2,14 @@
 import BaseLayout from "./BaseLayout.astro";
 import GameCard from "../components/GameCard.astro";
 import GameEmbedFrame from "../components/GameEmbedFrame.astro";
+import CatalogPreviewGame from "../components/games/CatalogPreviewGame.astro";
 import RedLightChallengeGame from "../components/games/RedLightChallengeGame.astro";
 import { site } from "../data/site";
 
 const { game, relatedGames = [] } = Astro.props;
 const canonicalPath = `/games/${game.slug}/`;
+const pageTitle = game.metaTitle || `${game.title} - Play Free Online | GamesBrowse`;
+const pageDescription = game.metaDescription || game.description || game.shortDescription;
 const structuredData = [
   {
     "@context": "https://schema.org",
@@ -50,8 +53,8 @@ const structuredData = [
 ];
 ---
 <BaseLayout
-  title={game.metaTitle}
-  description={game.metaDescription}
+  title={pageTitle}
+  description={pageDescription}
   canonicalPath={canonicalPath}
   type="article"
   noindex={game.noindex}
@@ -66,14 +69,14 @@ const structuredData = [
             <span aria-hidden="true">/</span>
             <a href="/games/">Games</a>
             <span aria-hidden="true">/</span>
-            <a href={`/categories/${game.category.slug}/`}>{game.category.label}</a>
+            <a href={`/category/${game.category.slug}/`}>{game.category.label}</a>
             <span aria-hidden="true">/</span>
             <span>{game.title}</span>
           </div>
 
           <span class="eyebrow">{game.heroEyebrow}</span>
           <h1>{game.title}</h1>
-          <p class="lead">{game.description}</p>
+          <p class="lead">{game.shortDescription || game.description}</p>
           <p class="muted">{game.lead}</p>
 
           <div class="button-row">
@@ -106,16 +109,23 @@ const structuredData = [
       <div class="panel play-shell">
         <div class="play-toolbar">
           <div class="stack">
-            <span class="kicker">Playable Module</span>
+            <span class="kicker">{game.status === "demo" ? "Preview Module" : "Playable Module"}</span>
             <h2>Play in Your Browser</h2>
           </div>
           <div class="pill-row">
-            <span class="pill is-brand">{game.playMode}</span>
+            <span class="pill is-brand">{game.type}</span>
             <span class="pill">{game.category.label}</span>
+            {game.status === "demo" && <span class="pill">Demo</span>}
           </div>
         </div>
 
-        {game.playMode === "iframe" ? <GameEmbedFrame game={game} /> : <RedLightChallengeGame />}
+        {game.type === "iframe" ? (
+          <GameEmbedFrame game={game} />
+        ) : game.slug === "red-light-challenge" ? (
+          <RedLightChallengeGame />
+        ) : (
+          <CatalogPreviewGame game={game} />
+        )}
       </div>
     </div>
   </section>
@@ -124,7 +134,7 @@ const structuredData = [
     <div class="container content-grid">
       <article class="panel stack">
         <div class="stack">
-          <h2 class="section-title">About This Game</h2>
+          <h2 class="section-title">Description</h2>
           {game.overview.map((paragraph) => <p class="section-copy">{paragraph}</p>)}
         </div>
 
@@ -161,8 +171,16 @@ const structuredData = [
               <span>{game.category.label}</span>
             </div>
             <div class="info-row">
-              <strong>Play Mode</strong>
-              <span>{game.playMode}</span>
+              <strong>Game Type</strong>
+              <span>{game.type}</span>
+            </div>
+            <div class="info-row">
+              <strong>Status</strong>
+              <span>{game.status === "demo" ? "Catalog Demo" : "Playable"}</span>
+            </div>
+            <div class="info-row">
+              <strong>Added</strong>
+              <span>{game.createdAt}</span>
             </div>
             <div class="info-row">
               <strong>Tags</strong>
@@ -196,11 +214,17 @@ const structuredData = [
     <section class="page-section">
       <div class="container stack">
         <div class="stack">
-          <span class="kicker">Related Games</span>
+          <span class="kicker">Similar Games</span>
           <h2>Keep Browsing</h2>
         </div>
         <div class="game-grid">
           {relatedGames.map((related) => <GameCard game={related} />)}
+        </div>
+        <div class="button-row">
+          <a href="/games/" class="button button-secondary">More Games</a>
+          <a href={`/category/${game.category.slug}/`} class="button button-secondary">
+            More {game.category.label} Games
+          </a>
         </div>
       </div>
     </section>

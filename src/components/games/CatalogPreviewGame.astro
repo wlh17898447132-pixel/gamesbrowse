@@ -1,0 +1,38 @@
+---
+const { game } = Astro.props;
+---
+<div class="preview-game">
+  <div class="preview-toolbar">
+    <div class="pill-row">
+      <span class="pill is-brand">Demo Preview</span>
+      <span class="pill">{game.category.label}</span>
+      <span class="pill">{game.type === "iframe" ? "iframe" : "native"}</span>
+    </div>
+  </div>
+
+  <div class={`preview-stage tone-${game.thumbnailTone || "sun"}`.trim()}>
+    <div class="preview-stage-grid">
+      <div class="preview-card">
+        <strong>{game.title}</strong>
+        <span>{game.shortDescription}</span>
+      </div>
+      <div class="preview-card">
+        <strong>Catalog Status</strong>
+        <span>This entry is a GamesBrowse demo placeholder.</span>
+      </div>
+      <div class="preview-card">
+        <strong>Controls</strong>
+        <span>{game.controls[0] || "Controls will be listed here."}</span>
+      </div>
+      <div class="preview-card">
+        <strong>Next Step</strong>
+        <span>A live browser game can replace this module later without changing the route.</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="embed-note">
+    This route is a catalog preview entry. It is useful for layout, search, category coverage, and
+    future game replacement without changing the page structure.
+  </p>
+</div>

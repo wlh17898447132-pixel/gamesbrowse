@@ -1,63 +1,86 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import CategoryCard from "../components/CategoryCard.astro";
 import GameCard from "../components/GameCard.astro";
-import { getCategoryGroups, getListedGames } from "../data/games";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  getCategoryCatalog,
+  getEditorPickGames,
+  getFeaturedGames,
+  getNewGames,
+  getPopularGames
+} from "../data/games";
 
-const listedGames = getListedGames();
-const featuredGames = listedGames.filter((game) => game.featured);
-const categories = getCategoryGroups();
+const heroGames = getFeaturedGames(4);
+const featuredGames = getFeaturedGames(4);
+const editorPickGames = getEditorPickGames(4);
+const popularGames = getPopularGames(6);
+const newGames = getNewGames(6);
+const categories = getCategoryCatalog();
+const popularCategories = categories.filter((category) => category.gameCount > 0).slice(0, 4);
 ---
-<BaseLayout>
-  <section class="page-section">
+<BaseLayout
+  title="GamesBrowse - Play Free Online Browser Games"
+  description="Play free online browser games on GamesBrowse. Discover arcade, puzzle, racing, reflex, and casual games you can play instantly."
+  canonicalPath="/"
+>
+  <section class="page-section page-section-hero">
     <div class="container">
-      <div class="hero-panel hero-grid">
-        <div class="hero-copy">
-          <span class="eyebrow">Phase 1 Multi-Page Build</span>
-          <h1>GamesBrowse Is Becoming a Real Multi-Page Game Site</h1>
+      <div class="hero-panel portal-hero-grid">
+        <div class="hero-copy hero-copy-wide">
+          <span class="eyebrow">GamesBrowse</span>
+          <h1>Play Free Online Games Instantly</h1>
           <p class="lead">
-            The old single-file launch page is now being migrated into a reusable site structure with
-            dedicated game routes, shared SEO, category pages, and iframe-ready templates.
-          </p>
-          <p class="muted">
-            Phase 1 keeps the footprint light while establishing the architecture needed for native
-            games, self-hosted HTML5 packages, and reviewed iframe aggregation sources.
+            Discover arcade, puzzle, racing, reflex, and casual browser games on GamesBrowse. Pick
+            a game and start playing right away.
           </p>
           <div class="button-row">
             <a href="/games/" class="button button-primary">Browse Games</a>
-            <a href="/about/" class="button button-secondary">See the Direction</a>
+            <a href="/category/" class="button button-secondary">Explore Categories</a>
           </div>
         </div>
 
-        <aside class="panel inset stack" aria-label="Build pillars">
-          <h2>Phase 1 Pillars</h2>
-          <div class="summary-grid">
-            <div class="summary-card">
-              <strong>Multi-Page SEO</strong>
-              <span>Dedicated routes for home, games, categories, and content pages.</span>
-            </div>
-            <div class="summary-card">
-              <strong>Reusable Layouts</strong>
-              <span>Shared shells for metadata, header, footer, cards, and game presentation.</span>
-            </div>
-            <div class="summary-card">
-              <strong>Data-Driven Games</strong>
-              <span>Game pages now originate from structured metadata instead of copied HTML.</span>
-            </div>
-            <div class="summary-card">
-              <strong>iframe-Ready</strong>
-              <span>Native and embedded games can share one consistent page template.</span>
-            </div>
-          </div>
-        </aside>
+        <div class="hero-showcase">
+          {heroGames.map((game) => <GameCard game={game} variant="compact" />)}
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="page-section tight">
+  <section class="page-section tight" id="search-games">
+    <div class="container">
+      <div class="panel search-panel">
+        <div class="stack">
+          <span class="kicker">Search Games</span>
+          <h2>Find a game fast</h2>
+          <p class="muted">
+            Search by title or jump into a category to keep browsing.
+          </p>
+        </div>
+        <form action="/games/" class="search-form" role="search">
+          <label class="sr-only" for="home-search">Search games</label>
+          <input id="home-search" name="q" type="search" placeholder="Search games..." />
+          <button type="submit" class="button button-primary">Search</button>
+        </form>
+        <div class="tag-list">
+          {categories.map((category) => (
+            <a class="tag" href={`/category/${category.slug}/`}>
+              {category.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="featured-games">
     <div class="container stack">
-      <div class="stack">
-        <span class="kicker">Featured Games</span>
-        <h2>Current Playable Surface</h2>
+      <div class="section-heading">
+        <div class="stack">
+          <span class="kicker">Featured Games</span>
+          <h2>Featured Games</h2>
+          <p class="muted">Handpicked browser games you can play instantly.</p>
+        </div>
+        <a href="/games/" class="button button-secondary">All Games</a>
       </div>
       <div class="game-grid">
         {featuredGames.map((game) => <GameCard game={game} />)}
@@ -65,34 +88,98 @@ const categories = getCategoryGroups();
     </div>
   </section>
 
+  <section class="page-section" id="editors-picks">
+    <div class="container stack">
+      <div class="section-heading">
+        <div class="stack">
+          <span class="kicker">Editor&apos;s Picks</span>
+          <h2>Editor&apos;s Picks</h2>
+          <p class="muted">Curated highlights from the current GamesBrowse catalog.</p>
+        </div>
+        <a href="/games/?sort=featured" class="button button-secondary">Browse Picks</a>
+      </div>
+      <div class="game-grid">
+        {editorPickGames.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="popular-games">
+    <div class="container stack">
+      <div class="section-heading">
+        <div class="stack">
+          <span class="kicker">Popular Games</span>
+          <h2>Popular Games</h2>
+          <p class="muted">A quick mix of portal favorites, replayable picks, and high-interest demos.</p>
+        </div>
+        <a href="/games/?sort=featured" class="button button-secondary">Browse Popular</a>
+      </div>
+      <div class="game-grid">
+        {popularGames.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="new-games">
+    <div class="container stack">
+      <div class="section-heading">
+        <div class="stack">
+          <span class="kicker">New Games</span>
+          <h2>New Games</h2>
+          <p class="muted">Latest additions across playable entries and fresh catalog previews.</p>
+        </div>
+        <a href="/games/?sort=newest" class="button button-secondary">See New Games</a>
+      </div>
+      <div class="game-grid">
+        {newGames.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section" id="categories">
+    <div class="container stack">
+      <div class="section-heading">
+        <div class="stack">
+          <span class="kicker">Browse by Category</span>
+          <h2>Browse by Category</h2>
+          <p class="muted">Arcade, puzzle, racing, reflex, and more, all organized for fast discovery.</p>
+        </div>
+        <a href="/category/" class="button button-secondary">All Categories</a>
+      </div>
+      <div class="category-grid">
+        {categories.map((category) => <CategoryCard category={category} />)}
+      </div>
+    </div>
+  </section>
+
   <section class="page-section">
-    <div class="container two-col-grid">
+    <div class="container portal-info-grid">
       <section class="panel stack">
-        <span class="kicker">Categories</span>
-        <h2>Structured for Expansion</h2>
+        <span class="kicker">About GamesBrowse</span>
+        <h2>About GamesBrowse</h2>
         <p class="muted">
-          Categories are now first-class routes. That gives the site a scalable way to group games,
-          build internal links, and support broader search intent beyond a single homepage.
+          GamesBrowse is a lightweight online game portal for free browser games. You can explore
+          arcade, puzzle, racing, reflex, and casual games without installing anything. Our goal is
+          to make it easy to find a game, start playing quickly, and discover more games after each
+          session.
+        </p>
+      </section>
+
+      <section class="panel stack">
+        <span class="kicker">Popular Categories</span>
+        <h2>Popular Categories</h2>
+        <p class="muted">
+          Start with the categories players usually browse first, then jump into game detail pages
+          from there.
         </p>
         <div class="tag-list">
-          {categories.map((category) => (
-            <a class="tag" href={`/categories/${category.slug}/`}>
+          {popularCategories.map((category) => (
+            <a class="tag" href={`/category/${category.slug}/`}>
               {category.label}
             </a>
           ))}
         </div>
       </section>
-
-      <section class="panel stack">
-        <span class="kicker">Architecture</span>
-        <h2>What Changed</h2>
-        <ul class="list">
-          <li>The project now has route templates instead of one hard-coded HTML page.</li>
-          <li>Game metadata is centralized, so new entries do not require copied page files.</li>
-          <li>The native game player and iframe shell now live under a shared page system.</li>
-        </ul>
-      </section>
     </div>
   </section>
 </BaseLayout>
-

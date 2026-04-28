@@ -1,22 +1,53 @@
 ---
-const { game } = Astro.props;
+const { game, variant = "default" } = Astro.props;
 const href = `/games/${game.slug}/`;
 const toneClass = game.thumbnailTone ? `tone-${game.thumbnailTone}` : "";
-const playModeLabel = game.playMode === "iframe" ? "iframe" : game.playMode;
+const typeLabel = game.type === "iframe" ? "iframe" : "native";
+const cardTags = (game.tags || []).slice(0, 2);
+const coverMark = (game.coverMark || game.title)
+  .split(/\s+/)
+  .map((word) => word[0])
+  .join("")
+  .slice(0, 2)
+  .toUpperCase();
+const isCompact = variant === "compact";
 ---
-<a href={href} class="game-card" aria-label={`Open ${game.title}`}>
+<a
+  href={href}
+  class={`game-card ${isCompact ? "is-compact" : ""}`}
+  aria-label={`Open ${game.title}`}
+>
   <div class={`card-thumb ${toneClass}`.trim()}>
-    <div class="stack">
+    {game.thumbnail && <img class="card-thumb-image" src={game.thumbnail} alt="" loading="lazy" />}
+    <div class="card-thumb-top">
       <small>{game.category.label}</small>
-      <h3>{game.shortTitle || game.title}</h3>
+      <span class={`card-status ${game.status === "demo" ? "is-demo" : "is-live"}`}>
+        {game.status === "demo" ? "Demo" : "Live"}
+      </span>
+    </div>
+    <div class="card-thumb-mark">{coverMark}</div>
+    <div class="card-thumb-footer">
+      <span>{typeLabel}</span>
+      {game.popular && <span>Popular</span>}
     </div>
   </div>
   <div class="card-body">
+    <div class="card-heading">
+      <h3>{game.shortTitle || game.title}</h3>
+    </div>
     <div class="badge-row">
       <span class="badge is-brand">{game.category.label}</span>
-      <span class="badge">{playModeLabel}</span>
+      <span class="badge">{typeLabel}</span>
+      {cardTags.map((tag) => (
+        <span class="badge">{tag}</span>
+      ))}
     </div>
-    <p class="muted">{game.description}</p>
+    <p class="card-description">{game.shortDescription || game.description}</p>
+    {!isCompact && (
+      <div class="card-action-row">
+        <span class="card-link">{game.status === "demo" ? "View details" : "Play now"}</span>
+      </div>
+    )}
   </div>
 </a>
 

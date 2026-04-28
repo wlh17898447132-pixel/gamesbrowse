@@ -1,9 +1,9 @@
 ---
 import GameLayout from "../../layouts/GameLayout.astro";
-import { games, getRelatedGames } from "../../data/games";
+import { catalogGames, getRelatedGames } from "../../data/games";
 
 export function getStaticPaths() {
-  return games.map((game) => ({
+  return catalogGames.map((game) => ({
     params: { slug: game.slug },
     props: {
       game,

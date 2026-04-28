@@ -3,25 +3,46 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout
   title="About GamesBrowse"
-  description="Learn how GamesBrowse is evolving from a single-page launch into a multi-page browser game platform."
+  description="Learn what GamesBrowse focuses on, how the portal is organized, and how native and embedded games fit into the site."
   canonicalPath="/about/"
 >
   <section class="page-section">
-    <div class="container">
-      <div class="panel legal-copy">
+    <div class="container stack">
+      <div class="hero-panel stack">
         <span class="eyebrow">About</span>
         <h1>About GamesBrowse</h1>
-        <p class="muted">
-          GamesBrowse started as a small single-page browser game launch and is now being reworked
-          into a broader game site with dedicated routes, stronger metadata, and future support for
-          both native and iframe-based games.
+        <p class="lead">
+          GamesBrowse is a lightweight portal for free browser games, designed to help players find
+          a game quickly and jump into play without extra setup.
         </p>
-        <p class="muted">
-          The current migration focuses on structure first: reusable layouts, scalable page
-          generation, category routes, and clear rules for external embeds.
-        </p>
+      </div>
+
+      <div class="portal-info-grid">
+        <section class="panel stack">
+          <h2>What the site focuses on</h2>
+          <p class="muted">
+            GamesBrowse keeps the experience clean: game detail pages, category routes, simple
+            discovery modules, and layouts that work well on desktop and mobile.
+          </p>
+          <p class="muted">
+            The goal is not to bury players under heavy navigation or long explanations. The portal
+            is built around quick discovery, fast loading, and easy replay.
+          </p>
+        </section>
+
+        <section class="panel stack">
+          <h2>How the catalog is structured</h2>
+          <p class="muted">
+            Each game has its own route, metadata, and category placement. Native mini-games and
+            embedded iframe games share the same overall page structure so the site can grow without
+            fragmenting the experience.
+          </p>
+          <p class="muted">
+            Categories, featured sections, popular modules, and newest additions all come from one
+            shared data source, which makes the portal easier to maintain as more games are added.
+          </p>
+        </section>
       </div>
     </div>
   </section>
 </BaseLayout>
-
