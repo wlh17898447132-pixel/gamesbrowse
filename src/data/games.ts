@@ -1,4 +1,12 @@
-export type GameSource = "gamedistribution" | "native" | "other";
+import {
+  GAMEPIX_SID,
+  gamePixCatalogGames,
+  gamePixFeedGames,
+  gamePixFeedState,
+  normalizeGamePixEmbedUrl
+} from "./gamepix";
+
+export type GameSource = "gamedistribution" | "gamepix" | "native" | "other";
 export type GameType = "iframe" | "native";
 export type GameStatus = "live" | "demo" | "internal";
 
@@ -20,12 +28,14 @@ export type CategoryDefinition = {
 };
 
 export type GameItem = {
+  externalId?: string;
   title: string;
   slug: string;
   source: GameSource;
   type: GameType;
   category: string;
   categories?: string[];
+  displayCategory?: string;
   tags: string[];
   shortDescription: string;
   description: string;
@@ -60,6 +70,7 @@ export type GameItem = {
   licenseType?: string;
   relatedSlugs?: string[];
   nativeComponent?: string;
+  orientation?: string;
 };
 
 export type ResolvedGameItem = Omit<GameItem, "category" | "categories" | "instructions" | "controls"> & {
@@ -213,6 +224,7 @@ function selectMetaDescription(shortDescription: string, description: string) {
 function defaultHeroEyebrow(game: GameItem, primaryCategory: CategoryDefinition) {
   if (game.status === "internal") return "Internal Tooling Route";
   if (game.status === "demo") return `${primaryCategory.label} Demo`;
+  if (game.source === "gamepix") return `Featured ${game.displayCategory || primaryCategory.label} Game`;
   if (game.source === "gamedistribution") return `Featured ${primaryCategory.label} Game`;
   return `${primaryCategory.label} Game`;
 }
@@ -223,6 +235,7 @@ function defaultLead(game: GameItem) {
 
 function defaultSourceName(game: GameItem) {
   if (game.sourceName) return game.sourceName;
+  if (game.source === "gamepix") return "GamePix";
   if (game.source === "gamedistribution") return "GameDistribution";
   if (game.source === "native") return "GamesBrowse";
   return "GamesBrowse Catalog";
@@ -230,6 +243,7 @@ function defaultSourceName(game: GameItem) {
 
 function defaultLicenseType(game: GameItem) {
   if (game.licenseType) return game.licenseType;
+  if (game.source === "gamepix") return "external embed";
   if (game.source === "gamedistribution") return "external embed";
   if (game.status === "demo") return "catalog demo";
   return "owned";
@@ -811,7 +825,8 @@ export const games: GameItem[] = [
     sourceName: "GamesBrowse Lab",
     licenseType: "owned",
     relatedSlugs: ["red-light-challenge"]
-  }
+  },
+  ...gamePixCatalogGames
 ];
 
 function validateGames(items: GameItem[]) {
@@ -853,6 +868,22 @@ function validateGames(items: GameItem[]) {
         throw new Error(
           `GameDistribution iframeBaseUrl must use html5.gamedistribution.com: ${game.slug}`
         );
+      }
+    }
+
+    if (game.type === "iframe" && game.source === "gamepix") {
+      if (!game.iframeBaseUrl) {
+        throw new Error(`Missing iframeBaseUrl for GamePix game: ${game.slug}`);
+      }
+
+      const iframeUrl = new URL(normalizeGamePixEmbedUrl(game.iframeBaseUrl, game.slug));
+
+      if (iframeUrl.hostname !== "play.gamepix.com") {
+        throw new Error(`GamePix iframeBaseUrl must use play.gamepix.com: ${game.slug}`);
+      }
+
+      if (iframeUrl.searchParams.get("sid") !== GAMEPIX_SID) {
+        throw new Error(`GamePix iframeBaseUrl must use sid=${GAMEPIX_SID}: ${game.slug}`);
       }
     }
   }
@@ -901,6 +932,7 @@ function resolveGame(game: GameItem): ResolvedGameItem {
 }
 
 export const catalogGames: ResolvedGameItem[] = games.map(resolveGame);
+const gamePixFeedSlugSet = new Set(gamePixFeedGames.map((game) => game.slug));
 
 export function getGameUrl(slug: string) {
   return `${SITE_URL}/games/${slug}/`;
@@ -908,6 +940,7 @@ export function getGameUrl(slug: string) {
 
 export function getGameIframeSrc(game: Pick<GameItem, "slug" | "type" | "source" | "iframeBaseUrl">) {
   if (game.type !== "iframe" || !game.iframeBaseUrl) return "";
+  if (game.source === "gamepix") return normalizeGamePixEmbedUrl(game.iframeBaseUrl, game.slug);
   if (game.source !== "gamedistribution") return game.iframeBaseUrl;
 
   const referrerUrl = getGameUrl(game.slug);
@@ -932,6 +965,24 @@ export function getIndexableGames() {
 
 export function getGameBySlug(slug: string) {
   return catalogGames.find((game) => game.slug === slug);
+}
+
+export function getGamePixFeedState() {
+  return gamePixFeedState;
+}
+
+export function getGamePixFeedGames(limit = 12) {
+  return catalogGames.filter((game) => gamePixFeedSlugSet.has(game.slug)).slice(0, limit);
+}
+
+export function getHomeShowcaseGames(limit = 4) {
+  const showcase = [
+    getGameBySlug("buckshot-roulette"),
+    ...getGamePixFeedGames(limit),
+    ...getFeaturedGames(limit)
+  ].filter((game): game is ResolvedGameItem => Boolean(game));
+
+  return Array.from(new Map(showcase.map((game) => [game.slug, game])).values()).slice(0, limit);
 }
 
 export function getCategoryCatalog() {
@@ -989,7 +1040,7 @@ export function getNewGames(limit = 8) {
     .slice(0, limit);
 }
 
-export function getRelatedGames(currentSlug: string, limit = 4) {
+export function getRelatedGames(currentSlug: string, limit = 8) {
   const current = getGameBySlug(currentSlug);
   if (!current) return [];
 

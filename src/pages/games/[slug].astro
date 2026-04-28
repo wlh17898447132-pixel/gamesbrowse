@@ -7,7 +7,7 @@ export function getStaticPaths() {
     params: { slug: game.slug },
     props: {
       game,
-      relatedGames: getRelatedGames(game.slug)
+      relatedGames: getRelatedGames(game.slug, 8)
     }
   }));
 }

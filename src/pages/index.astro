@@ -6,12 +6,19 @@ import {
   getCategoryCatalog,
   getEditorPickGames,
   getFeaturedGames,
+  getGameBySlug,
+  getGamePixFeedGames,
+  getGamePixFeedState,
+  getHomeShowcaseGames,
   getNewGames,
   getPopularGames
 } from "../data/games";
 
-const heroGames = getFeaturedGames(4);
-const featuredGames = getFeaturedGames(4);
+const gamePixFeedState = getGamePixFeedState();
+const buckshotGame = getGameBySlug("buckshot-roulette");
+const heroGames = getHomeShowcaseGames(4);
+const gamePixGames = getGamePixFeedGames(12);
+const featuredGames = getFeaturedGames(6);
 const editorPickGames = getEditorPickGames(4);
 const popularGames = getPopularGames(6);
 const newGames = getNewGames(6);
@@ -20,7 +27,7 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
 ---
 <BaseLayout
   title="GamesBrowse - Play Free Online Browser Games"
-  description="Play free online browser games on GamesBrowse. Discover arcade, puzzle, racing, reflex, and casual games you can play instantly."
+  description="Play free online browser games on GamesBrowse with responsive GamePix embeds, clean detail pages, and instant access across desktop and mobile."
   canonicalPath="/"
 >
   <section class="page-section page-section-hero">
@@ -30,12 +37,16 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
           <span class="eyebrow">GamesBrowse</span>
           <h1>Play Free Online Games Instantly</h1>
           <p class="lead">
-            Discover arcade, puzzle, racing, reflex, and casual browser games on GamesBrowse. Pick
-            a game and start playing right away.
+            Discover responsive GamePix and browser games on GamesBrowse. Open a game card, jump
+            into the detail page, and start playing without leaving the site.
           </p>
           <div class="button-row">
-            <a href="/games/" class="button button-primary">Browse Games</a>
-            <a href="/category/" class="button button-secondary">Explore Categories</a>
+            {buckshotGame ? (
+              <a href={buckshotGame.detailUrl} class="button button-primary">Play Buckshot Roulette</a>
+            ) : (
+              <a href="/games/" class="button button-primary">Browse Games</a>
+            )}
+            <a href="/games/" class="button button-secondary">Browse Games</a>
           </div>
         </div>
 
@@ -72,13 +83,43 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
     </div>
   </section>
 
+  <section class="page-section" id="play-free-games">
+    <div class="container stack">
+      <div class="section-heading">
+        <div class="stack">
+          <span class="kicker">GamePix Feed</span>
+          <h2>Play Free Online Games</h2>
+          <p class="muted">
+            Fresh GamePix titles pulled into the GamesBrowse catalog with responsive detail pages
+            and embedded play.
+          </p>
+        </div>
+        <a href="/games/" class="button button-secondary">All Games</a>
+      </div>
+
+      {gamePixFeedState.available ? (
+        <div class="game-grid">
+          {gamePixGames.map((game) => <GameCard game={game} />)}
+        </div>
+      ) : (
+        <div class="panel stack empty-state">
+          <h2>Games are temporarily unavailable. Please try again later.</h2>
+          <p class="muted">
+            The GamePix feed did not respond during the last build, so the homepage feed section is
+            temporarily empty.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+
   <section class="page-section" id="featured-games">
     <div class="container stack">
       <div class="section-heading">
         <div class="stack">
           <span class="kicker">Featured Games</span>
-          <h2>Featured Games</h2>
-          <p class="muted">Handpicked browser games you can play instantly.</p>
+          <h2>Featured Picks</h2>
+          <p class="muted">Highlighted games from the current GamesBrowse catalog.</p>
         </div>
         <a href="/games/" class="button button-secondary">All Games</a>
       </div>

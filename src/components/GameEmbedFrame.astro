@@ -25,17 +25,20 @@ const fallbackHref = frameSrc;
 
   <div class="game-frame-shell embed-shell" id={frameShellId} style={`--frame-ratio: ${frameRatio};`}>
     {frameSrc ? (
-      <iframe
-        class="game-frame embed-frame"
-        src={frameSrc}
-        title={game.title}
-        loading="lazy"
-        allow={game.iframeAllow || "autoplay; fullscreen"}
-        sandbox={game.iframeSandbox}
-        scrolling="none"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen
-      ></iframe>
+      <>
+        <div class="embed-loading" data-frame-loading={frameShellId}>Loading game...</div>
+        <iframe
+          class="game-frame embed-frame"
+          src={frameSrc}
+          title={game.title}
+          loading="eager"
+          allow={game.iframeAllow || "autoplay; fullscreen"}
+          sandbox={game.iframeSandbox}
+          scrolling="none"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </>
     ) : (
       <div class="game-frame-placeholder">Game is not available.</div>
     )}
@@ -49,7 +52,26 @@ const fallbackHref = frameSrc;
   )}
 </div>
 
-<script is:inline>
+<script is:inline define:vars={{ frameShellId }}>
+  const shell = document.getElementById(frameShellId);
+  const frame = shell?.querySelector("iframe");
+  const loading = shell?.querySelector("[data-frame-loading]");
+
+  if (frame && loading) {
+    const slowLoadTimer = window.setTimeout(() => {
+      loading.textContent = "Still loading... If nothing appears, use the source link below.";
+    }, 10000);
+
+    frame.addEventListener(
+      "load",
+      () => {
+        window.clearTimeout(slowLoadTimer);
+        shell?.classList.add("is-loaded");
+      },
+      { once: true }
+    );
+  }
+
   document.addEventListener("click", (event) => {
     const trigger = event.target.closest("[data-frame-fullscreen]");
     if (!trigger) return;

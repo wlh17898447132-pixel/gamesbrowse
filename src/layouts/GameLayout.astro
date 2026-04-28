@@ -10,6 +10,7 @@ const { game, relatedGames = [] } = Astro.props;
 const canonicalPath = `/games/${game.slug}/`;
 const pageTitle = game.metaTitle || `${game.title} - Play Free Online | GamesBrowse`;
 const pageDescription = game.metaDescription || game.description || game.shortDescription;
+const displayCategory = game.displayCategory || game.category.label;
 const structuredData = [
   {
     "@context": "https://schema.org",
@@ -64,6 +65,10 @@ const structuredData = [
     <div class="container">
       <div class="hero-panel hero-grid">
         <div class="hero-copy">
+          <div class="button-row">
+            <a href="/games/" class="button button-secondary">Back to Games</a>
+          </div>
+
           <div class="breadcrumbs" aria-label="Breadcrumb">
             <a href="/">Home</a>
             <span aria-hidden="true">/</span>
@@ -114,7 +119,7 @@ const structuredData = [
           </div>
           <div class="pill-row">
             <span class="pill is-brand">{game.type}</span>
-            <span class="pill">{game.category.label}</span>
+            <span class="pill">{displayCategory}</span>
             {game.status === "demo" && <span class="pill">Demo</span>}
           </div>
         </div>
@@ -168,7 +173,7 @@ const structuredData = [
           <div class="info-table">
             <div class="info-row">
               <strong>Category</strong>
-              <span>{game.category.label}</span>
+              <span>{displayCategory}</span>
             </div>
             <div class="info-row">
               <strong>Game Type</strong>
@@ -214,7 +219,7 @@ const structuredData = [
     <section class="page-section">
       <div class="container stack">
         <div class="stack">
-          <span class="kicker">Similar Games</span>
+          <span class="kicker">More Games</span>
           <h2>Keep Browsing</h2>
         </div>
         <div class="game-grid">

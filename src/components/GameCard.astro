@@ -3,6 +3,7 @@ const { game, variant = "default" } = Astro.props;
 const href = `/games/${game.slug}/`;
 const toneClass = game.thumbnailTone ? `tone-${game.thumbnailTone}` : "";
 const typeLabel = game.type === "iframe" ? "iframe" : "native";
+const categoryLabel = game.displayCategory || game.category.label;
 const cardTags = (game.tags || []).slice(0, 2);
 const coverMark = (game.coverMark || game.title)
   .split(/\s+/)
@@ -11,6 +12,7 @@ const coverMark = (game.coverMark || game.title)
   .slice(0, 2)
   .toUpperCase();
 const isCompact = variant === "compact";
+const actionLabel = game.status === "demo" ? "Details" : "Play";
 ---
 <a
   href={href}
@@ -18,9 +20,17 @@ const isCompact = variant === "compact";
   aria-label={`Open ${game.title}`}
 >
   <div class={`card-thumb ${toneClass}`.trim()}>
-    {game.thumbnail && <img class="card-thumb-image" src={game.thumbnail} alt="" loading="lazy" />}
+    {game.thumbnail && (
+      <img
+        class="card-thumb-image"
+        src={game.thumbnail}
+        alt={`${game.title} cover`}
+        loading="lazy"
+        onerror="this.remove()"
+      />
+    )}
     <div class="card-thumb-top">
-      <small>{game.category.label}</small>
+      <small>{categoryLabel}</small>
       <span class={`card-status ${game.status === "demo" ? "is-demo" : "is-live"}`}>
         {game.status === "demo" ? "Demo" : "Live"}
       </span>
@@ -36,18 +46,17 @@ const isCompact = variant === "compact";
       <h3>{game.shortTitle || game.title}</h3>
     </div>
     <div class="badge-row">
-      <span class="badge is-brand">{game.category.label}</span>
+      <span class="badge is-brand">{categoryLabel}</span>
       <span class="badge">{typeLabel}</span>
       {cardTags.map((tag) => (
         <span class="badge">{tag}</span>
       ))}
     </div>
     <p class="card-description">{game.shortDescription || game.description}</p>
-    {!isCompact && (
-      <div class="card-action-row">
-        <span class="card-link">{game.status === "demo" ? "View details" : "Play now"}</span>
-      </div>
-    )}
+    <div class="card-action-row">
+      <span class="card-link">{game.status === "demo" ? "View details" : "Open game"}</span>
+      <span class="card-play-button">{actionLabel}</span>
+    </div>
   </div>
 </a>
 

@@ -1,22 +1,24 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GameCard from "../../components/GameCard.astro";
-import { getCategoryCatalog, getListedGames } from "../../data/games";
+import { getCategoryCatalog, getGamePixFeedState, getListedGames } from "../../data/games";
 
 const games = getListedGames();
 const categories = getCategoryCatalog();
+const gamePixFeedState = getGamePixFeedState();
 
 const initialGames = games
   .slice()
   .sort((a, b) => {
     if (a.featured !== b.featured) return Number(b.featured) - Number(a.featured);
-    if (a.popularRank !== b.popularRank) return b.popularRank - a.popularRank;
+    if (a.popular !== b.popular) return Number(b.popular) - Number(a.popular);
+    if (a.newGame !== b.newGame) return Number(b.newGame) - Number(a.newGame);
     return a.title.localeCompare(b.title);
   });
 ---
 <BaseLayout
   title="All Games - GamesBrowse"
-  description="Browse all free online browser games on GamesBrowse and discover arcade, puzzle, racing, reflex, and casual games."
+  description="Browse all free online browser games on GamesBrowse, including responsive GamePix embeds and catalog picks across arcade, puzzle, racing, reflex, and casual categories."
   canonicalPath="/games/"
 >
   <section class="page-section">
@@ -34,6 +36,16 @@ const initialGames = games
           newest entries, or title.
         </p>
       </div>
+
+      {!gamePixFeedState.available && (
+        <div class="panel stack empty-state">
+          <h2>Games are temporarily unavailable. Please try again later.</h2>
+          <p class="muted">
+            The last GamePix feed request did not complete during the build, so some external games
+            may be missing from the catalog.
+          </p>
+        </div>
+      )}
 
       <div class="panel catalog-toolbar stack">
         <div class="catalog-toolbar-grid">
