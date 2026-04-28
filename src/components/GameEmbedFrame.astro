@@ -4,7 +4,7 @@ const { game } = Astro.props;
 const frameShellId = `frame-shell-${game.slug}`;
 const frameRatio = getGameFrameRatio(game).replace(":", " / ");
 const frameSrc = getGameIframeSrc(game);
-const sourceHref = game.gameDistributionUrl || game.iframeBaseUrl || "";
+const fallbackHref = frameSrc || game.gameDistributionUrl || game.iframeBaseUrl || "";
 ---
 <div class="panel inset stack">
   <div class="embed-toolbar">
@@ -41,10 +41,10 @@ const sourceHref = game.gameDistributionUrl || game.iframeBaseUrl || "";
     )}
   </div>
 
-  {sourceHref && (
+  {fallbackHref && (
     <p class="embed-note">
-      If the embedded game fails to load, open it at the source:
-      <a href={sourceHref}> {game.sourceName}</a>.
+      If the embedded game fails to load, open it in a new tab:
+      <a href={fallbackHref} target="_blank" rel="noopener noreferrer"> {game.sourceName}</a>.
     </p>
   )}
 </div>
