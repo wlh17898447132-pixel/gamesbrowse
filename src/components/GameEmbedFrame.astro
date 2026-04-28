@@ -3,6 +3,9 @@ import { getGameFrameRatio, getGameIframeSrc } from "../data/games";
 const { game } = Astro.props;
 const frameShellId = `frame-shell-${game.slug}`;
 const frameRatio = getGameFrameRatio(game).replace(":", " / ");
+const isLandscape = game.orientation === "landscape";
+const frameMaxWidth = game.source === "playgama" ? "1200px" : "960px";
+const frameMobileRatio = isLandscape ? frameRatio : "4 / 3";
 const frameSrc = getGameIframeSrc(game);
 const fallbackHref = frameSrc;
 ---
@@ -23,7 +26,11 @@ const fallbackHref = frameSrc;
     )}
   </div>
 
-  <div class="game-frame-shell embed-shell" id={frameShellId} style={`--frame-ratio: ${frameRatio};`}>
+  <div
+    class="game-frame-shell embed-shell"
+    id={frameShellId}
+    style={`--frame-ratio: ${frameRatio}; --frame-mobile-ratio: ${frameMobileRatio}; --frame-max-width: ${frameMaxWidth};`}
+  >
     {frameSrc ? (
       <>
         <div class="embed-loading" data-frame-loading={frameShellId}>Loading game...</div>
@@ -43,6 +50,10 @@ const fallbackHref = frameSrc;
       <div class="game-frame-placeholder">Game is not available.</div>
     )}
   </div>
+
+  {isLandscape && (
+    <p class="embed-tip">Mobile tip: rotate your device to landscape if you want a wider play area.</p>
+  )}
 
   {fallbackHref && (
     <p class="embed-note">

@@ -11,6 +11,18 @@ const canonicalPath = `/games/${game.slug}/`;
 const pageTitle = game.metaTitle || `${game.title} - Play Free Online | GamesBrowse`;
 const pageDescription = game.metaDescription || game.description || game.shortDescription;
 const displayCategory = game.displayCategory || game.category.label;
+const genreLabels = game.genreLabels?.length ? game.genreLabels : game.tags;
+const platformLabels = game.platforms?.length ? game.platforms : ["Desktop Browser"];
+const orientationLabel =
+  game.orientation === "landscape"
+    ? "Landscape"
+    : game.orientation === "portrait"
+      ? "Portrait"
+      : game.iframeWidth && game.iframeHeight
+        ? game.iframeWidth >= game.iframeHeight
+          ? "Landscape"
+          : "Portrait"
+        : "Standard";
 const structuredData = [
   {
     "@context": "https://schema.org",
@@ -42,10 +54,12 @@ const structuredData = [
     name: game.title,
     url: `${site.url}${canonicalPath}`,
     description: game.description,
-    genre: game.tags,
+    genre: genreLabels,
     gamePlatform: ["Web Browser", "Mobile Web"],
     applicationCategory: "Game",
     operatingSystem: "Any",
+    image: game.thumbnail ? [game.thumbnail] : undefined,
+    isAccessibleForFree: true,
     publisher: {
       "@type": "Organization",
       name: "GamesBrowse"
@@ -66,6 +80,7 @@ const structuredData = [
       <div class="hero-panel hero-grid">
         <div class="hero-copy">
           <div class="button-row">
+            <a href="/" class="button button-secondary">Back to Home</a>
             <a href="/games/" class="button button-secondary">Back to Games</a>
           </div>
 
@@ -95,6 +110,11 @@ const structuredData = [
         </div>
 
         <aside class="panel inset stack" aria-label="Game summary">
+          {game.thumbnail && (
+            <figure class="game-cover-card">
+              <img class="game-cover-image" src={game.thumbnail} alt={`${game.title} cover`} loading="eager" />
+            </figure>
+          )}
           <h2>Quick Summary</h2>
           <div class="summary-grid">
             {game.summary.map((item) => (
@@ -104,6 +124,11 @@ const structuredData = [
               </div>
             ))}
           </div>
+          {game.orientation === "landscape" && (
+            <p class="subtle-note">
+              This game plays best in landscape on narrow mobile screens.
+            </p>
+          )}
         </aside>
       </div>
     </div>
@@ -139,7 +164,7 @@ const structuredData = [
     <div class="container content-grid">
       <article class="panel stack">
         <div class="stack">
-          <h2 class="section-title">Description</h2>
+          <h2 class="section-title">About This Game</h2>
           {game.overview.map((paragraph) => <p class="section-copy">{paragraph}</p>)}
         </div>
 
@@ -176,8 +201,20 @@ const structuredData = [
               <span>{displayCategory}</span>
             </div>
             <div class="info-row">
+              <strong>Genre</strong>
+              <span>{genreLabels.join(", ")}</span>
+            </div>
+            <div class="info-row">
+              <strong>Platform</strong>
+              <span>{platformLabels.join(", ")}</span>
+            </div>
+            <div class="info-row">
+              <strong>Orientation</strong>
+              <span>{orientationLabel}</span>
+            </div>
+            <div class="info-row">
               <strong>Game Type</strong>
-              <span>{game.type}</span>
+              <span>{game.type === "iframe" ? "Embedded iframe" : game.type}</span>
             </div>
             <div class="info-row">
               <strong>Status</strong>

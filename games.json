@@ -1,0 +1,126 @@
+{
+  "input": {
+    "ageGroups": [],
+    "interests": [],
+    "platforms": [],
+    "supportedLanguages": [],
+    "hasInAppPurchases": false,
+    "horizontal": false,
+    "vertical": false,
+    "search": "Only Up"
+  },
+  "sort": {
+    "type": "ranking_default"
+  },
+  "segments": [
+    {
+      "title": "Specially for you",
+      "count": 2,
+      "hits": [
+        {
+          "id": "99664",
+          "slug": "rooftop-run",
+          "title": "Rooftop Run",
+          "description": "Rooftop Run – Race Across the City! 🏃‍♂️💨\n\nRun, jump, and slide over rooftops in this fast-paced parkour game! Dodge obstacles, smash through barriers, and escape from enemies as you race through exciting levels.\n",
+          "howToPlayText": "🔥 Game Features:\n\nCool Parkour Moves – Jump, roll, and slide to keep running.\n\nFast Levels – Complete thrilling challenges and master your skills.\n\nSimple Controls – Easy to learn, fun to play!\n\n🖥️ Desktop Controls:\n\n↑ (Up Arrow) – Move up\n\n↓ (Down Arrow) – Move down\n\n← (Left Arrow) – Move left\n\n→ (Right Arrow) – Move right\n\nSpacebar – Fire weapon\n\nShift – Activate boost\n\n📱 Mobile Controls:\n\nOn-Screen Joystick – Drag to move\n\nFire Button – Tap to shoot\n\nBoost Button – Tap to go faster\n\nBe the best parkour runner! Play Rooftop Run now and start your adventure! ",
+          "gameURL": "https://playgama.com/export/game/rooftop-run?clid=p_ff085a14-aa9c-4a73-bc6d-e0570d038215",
+          "playgamaGameUrl": "https://playgama.com/game/rooftop-run",
+          "genres": [
+            "action",
+            "skill",
+            "running",
+            "platform",
+            "parkour",
+            "mobile"
+          ],
+          "tags": [
+            "casual-games",
+            "agility-games",
+            "unity-games-online",
+            "fast-paced-action"
+          ],
+          "images": [
+            "https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/f6a172bd-52d7-46a2-9180-7f2ea1853300/enlarged",
+            "https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/99f03ab5-43ec-4f2e-91e3-461d71a78e00/enlarged"
+          ],
+          "videos": [
+            {
+              "playgama_id": "8526b1ddbf6643d086bcc8398a33abcc",
+              "external_url": "",
+              "type": "gameplay"
+            },
+            {
+              "playgama_id": "da98c2ba61f74c94b81141138a274b8b",
+              "external_url": "",
+              "type": "gameplay"
+            }
+          ],
+          "mobileReady": [
+            "For Android",
+            "For IOS",
+            "For Desktop"
+          ],
+          "gender": [
+            "Male",
+            "Female"
+          ],
+          "inGamePurchases": "No",
+          "supportedLanguages": [
+            "en-US"
+          ],
+          "screenOrientation": {
+            "horizontal": true,
+            "vertical": true
+          },
+          "embed": "<iframe src='https://playgama.com/export/game/rooftop-run?clid=p_ff085a14-aa9c-4a73-bc6d-e0570d038215' allow='fullscreen; accelerometer; camera; clipboard-read; clipboard-write; screen-wake-lock; speaker-selection; web-share; geolocation; gyroscope; microphone; xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; payment; publickey-credentials-get; publickey-credentials-create; storage-access; attribution-reporting; browsing-topics' frameborder='0' width='800' height='450'></iframe>"
+        },
+        {
+          "id": "117296",
+          "slug": "only-up-parkour-2",
+          "title": "Only Up Parkour 2",
+          "description": "Only Up Parkour 2! is an exciting arcade game in which you have to overcome obstacles and conquer heights of 500M. Inspired by the popular game Your task is to guide the character through a vertical labyrinth full of various obstacles. You must react quickly, jump accurately and climb up dexterously to avoid crashing into obstacles and falling down. As you progress through the various levels, you will encounter increasing difficulty and new challenges such as Jumping platforms and obstacles.",
+          "howToPlayText": "[ WASD ] -  Move\n[ Space ] - Jump\n[ E ] - Relocate to check point\n\nJust keep moving up and you will reach the end (I hope so ¯\\_(ツ)_/¯)",
+          "gameURL": "https://playgama.com/export/game/only-up-parkour-2?clid=p_ff085a14-aa9c-4a73-bc6d-e0570d038215",
+          "playgamaGameUrl": "https://playgama.com/game/only-up-parkour-2",
+          "genres": [
+            "arcade",
+            "skill",
+            "3d",
+            "platform",
+            "physics"
+          ],
+          "tags": [
+            "reaction-games",
+            "hardcore-games",
+            "jumping-games",
+            "challenge-games"
+          ],
+          "images": [
+            "https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/87292321-40e9-4bfc-3ed5-1f5dfca3a400/enlarged",
+            "https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/c574a7d9-5650-4246-07df-dd6013a93500/enlarged"
+          ],
+          "videos": [],
+          "mobileReady": [
+            "For Android",
+            "For IOS",
+            "For Desktop"
+          ],
+          "gender": [
+            "Male",
+            "Female"
+          ],
+          "inGamePurchases": "No",
+          "supportedLanguages": [
+            "en-US",
+            "ru-RU"
+          ],
+          "screenOrientation": {
+            "horizontal": true,
+            "vertical": false
+          },
+          "embed": "<iframe src='https://playgama.com/export/game/only-up-parkour-2?clid=p_ff085a14-aa9c-4a73-bc6d-e0570d038215' allow='fullscreen; accelerometer; camera; clipboard-read; clipboard-write; screen-wake-lock; speaker-selection; web-share; geolocation; gyroscope; microphone; xr-spatial-tracking; autoplay; encrypted-media; picture-in-picture; payment; publickey-credentials-get; publickey-credentials-create; storage-access; attribution-reporting; browsing-topics' frameborder='0' width='800' height='450'></iframe>"
+        }
+      ]
+    }
+  ]
+}

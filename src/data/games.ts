@@ -5,8 +5,9 @@ import {
   gamePixFeedState,
   normalizeGamePixEmbedUrl
 } from "./gamepix";
+import { playgamaGames } from "./playgamaGames";
 
-export type GameSource = "gamedistribution" | "gamepix" | "native" | "other";
+export type GameSource = "gamedistribution" | "gamepix" | "native" | "other" | "playgama";
 export type GameType = "iframe" | "native";
 export type GameStatus = "live" | "demo" | "internal";
 
@@ -45,6 +46,14 @@ export type GameItem = {
   ageGroup?: string;
   language?: string;
   thumbnail?: string;
+  genreLabels?: string[];
+  platforms?: string[];
+  gameUrl?: string;
+  embedUrl?: string;
+  iframeCode?: string;
+  iframeAllow?: string;
+  iframeSandbox?: string;
+  allowFullscreen?: boolean;
   gameDistributionUrl?: string;
   iframeBaseUrl?: string;
   iframeWidth?: number;
@@ -225,6 +234,7 @@ function defaultHeroEyebrow(game: GameItem, primaryCategory: CategoryDefinition)
   if (game.status === "internal") return "Internal Tooling Route";
   if (game.status === "demo") return `${primaryCategory.label} Demo`;
   if (game.source === "gamepix") return `Featured ${game.displayCategory || primaryCategory.label} Game`;
+  if (game.source === "playgama") return `Featured ${game.displayCategory || primaryCategory.label} Game`;
   if (game.source === "gamedistribution") return `Featured ${primaryCategory.label} Game`;
   return `${primaryCategory.label} Game`;
 }
@@ -236,6 +246,7 @@ function defaultLead(game: GameItem) {
 function defaultSourceName(game: GameItem) {
   if (game.sourceName) return game.sourceName;
   if (game.source === "gamepix") return "GamePix";
+  if (game.source === "playgama") return "Playgama";
   if (game.source === "gamedistribution") return "GameDistribution";
   if (game.source === "native") return "GamesBrowse";
   return "GamesBrowse Catalog";
@@ -244,6 +255,7 @@ function defaultSourceName(game: GameItem) {
 function defaultLicenseType(game: GameItem) {
   if (game.licenseType) return game.licenseType;
   if (game.source === "gamepix") return "external embed";
+  if (game.source === "playgama") return "partner embed";
   if (game.source === "gamedistribution") return "external embed";
   if (game.status === "demo") return "catalog demo";
   return "owned";
@@ -280,65 +292,7 @@ function getDefaultFrameSize(game: GameItem) {
 }
 
 export const games: GameItem[] = [
-  {
-    title: "Only Up Parkour 2",
-    slug: "only-up-parkour-2",
-    source: "gamedistribution",
-    type: "iframe",
-    category: "Arcade",
-    categories: ["Arcade", "Parkour", "Skill"],
-    tags: ["Arcade", "Parkour", "Jumping", "Skill"],
-    shortDescription: "Jump, climb, and avoid obstacles in a vertical parkour arcade challenge.",
-    description:
-      "Only Up Parkour 2 is a vertical parkour arcade game where you jump, climb, and avoid obstacles to reach the top.",
-    instructions: "WASD = Move, Space = Jump",
-    controls: "WASD = Move, Space = Jump",
-    gender: ["Male", "Female"],
-    ageGroup: "Young Adults",
-    language: "English",
-    gameDistributionUrl: "https://gamedistribution.com/games/only-up-parkour-2/",
-    iframeBaseUrl: "https://html5.gamedistribution.com/48a82403f7b14a6b8a1ffb4f9f20dae9/",
-    iframeWidth: 960,
-    iframeHeight: 600,
-    featured: true,
-    popular: true,
-    editorPick: true,
-    newGame: true,
-    createdAt: "2026-04-28",
-    lead:
-      "Climb higher, recover from risky jumps, and keep your movement clean as the path gets harder.",
-    summary: [
-      { label: "Genre", value: "Arcade / Parkour" },
-      { label: "Platform", value: "Browser, Mobile Web" },
-      { label: "Goal", value: "Climb as high as possible" },
-      { label: "Best For", value: "Vertical movement challenges" }
-    ],
-    overview: [
-      "Only Up Parkour 2 is built around vertical movement, careful jumps, and clean recovery after every missed landing.",
-      "The page keeps the GameDistribution embed inside the GamesBrowse layout so you can start playing quickly without leaving the site."
-    ],
-    tips: [
-      "Use small adjustments before big jumps.",
-      "Keep momentum under control instead of rushing every platform.",
-      "If the frame feels cramped on desktop, switch to fullscreen."
-    ],
-    faq: [
-      {
-        question: "Is Only Up Parkour 2 hosted directly on GamesBrowse?",
-        answer: "No. The game is embedded from GameDistribution inside the GamesBrowse page shell."
-      },
-      {
-        question: "Does the iframe still use the GameDistribution source?",
-        answer:
-          "Yes. The game source remains on GameDistribution, while gd_sdk_referrer_url points back to the GamesBrowse game page."
-      },
-      {
-        question: "Can I play on mobile?",
-        answer: "Yes. The page is responsive and the embedded game can load on supported mobile browsers."
-      }
-    ],
-    relatedSlugs: ["red-light-challenge", "neon-drift-dash", "comet-shot-arena", "tap-forge-clicker"]
-  },
+  ...playgamaGames,
   {
     title: "Vex X3M",
     slug: "vex-x3m",
@@ -884,6 +838,18 @@ function validateGames(items: GameItem[]) {
 
       if (iframeUrl.searchParams.get("sid") !== GAMEPIX_SID) {
         throw new Error(`GamePix iframeBaseUrl must use sid=${GAMEPIX_SID}: ${game.slug}`);
+      }
+    }
+
+    if (game.type === "iframe" && game.source === "playgama") {
+      if (!game.iframeBaseUrl) {
+        throw new Error(`Missing iframeBaseUrl for Playgama game: ${game.slug}`);
+      }
+
+      const iframeUrl = new URL(game.iframeBaseUrl);
+
+      if (!iframeUrl.hostname.endsWith("playgama.com")) {
+        throw new Error(`Playgama iframeBaseUrl must use playgama.com: ${game.slug}`);
       }
     }
   }

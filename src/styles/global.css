@@ -274,6 +274,7 @@ p {
 .section-copy,
 .footer-note,
 .embed-note,
+.embed-tip,
 .category-card-description,
 .catalog-result-copy {
   color: var(--muted);
@@ -589,6 +590,20 @@ p {
   gap: 14px;
 }
 
+.game-cover-card {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.game-cover-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .summary-card {
   padding: 18px;
   border-radius: 18px;
@@ -689,7 +704,7 @@ p {
 .embed-shell {
   position: relative;
   width: 100%;
-  max-width: 960px;
+  max-width: var(--frame-max-width, 960px);
   margin: 0 auto;
   overflow: hidden;
   border-radius: 20px;
@@ -1142,7 +1157,7 @@ p {
 
   .game-frame-shell {
     border-radius: 14px;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: var(--frame-mobile-ratio, 4 / 3);
   }
 }
 
