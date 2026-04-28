@@ -4,7 +4,7 @@ const { game } = Astro.props;
 const frameShellId = `frame-shell-${game.slug}`;
 const frameRatio = getGameFrameRatio(game).replace(":", " / ");
 const frameSrc = getGameIframeSrc(game);
-const fallbackHref = frameSrc || game.gameDistributionUrl || game.iframeBaseUrl || "";
+const fallbackHref = frameSrc;
 ---
 <div class="panel inset stack">
   <div class="embed-toolbar">
