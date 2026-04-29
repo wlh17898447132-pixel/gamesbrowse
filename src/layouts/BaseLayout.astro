@@ -42,6 +42,19 @@ const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredD
 <!doctype html>
 <html lang="en">
   <head>
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-KD1LZLJL4H"
+    ></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-KD1LZLJL4H");
+    </script>
     <SEOHead
       title={title}
       description={description}
