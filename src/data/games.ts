@@ -213,12 +213,64 @@ function toList(value?: string) {
   return [normalized];
 }
 
+const defaultBestForByCategory: Record<string, string> = {
+  arcade: "quick retry sessions and score chasing",
+  action: "players who want pressure, movement, and momentum",
+  puzzle: "logic-focused runs and pattern solving",
+  racing: "speed control, lane reading, and clean finishes",
+  reflex: "short timing tests and fast reactions",
+  clicker: "casual upgrade loops and steady progression",
+  sports: "quick competitive rounds and shot timing",
+  shooting: "aim-heavy runs and dodge pressure",
+  casual: "low-pressure sessions and easy replay"
+};
+
+function defaultPlatformValue(game: GameItem) {
+  if (game.platforms?.length) return game.platforms.join(", ");
+  if (game.type === "iframe") return "Desktop Browser, Mobile Web";
+  return "Desktop Browser";
+}
+
+function defaultFormatValue(game: GameItem) {
+  if (game.status === "demo") return "Catalog Demo";
+  if (game.status === "internal") return "Internal Validation Route";
+  if (game.source === "gamepix") return "GamePix Embed";
+  if (game.source === "playgama") return "Playgama Embed";
+  if (game.source === "gamedistribution") return "GameDistribution Embed";
+  if (game.type === "native") return "Native Browser Game";
+  return "Browser Game";
+}
+
+function defaultBestForValue(game: GameItem, primaryCategory: CategoryDefinition) {
+  const displayCategorySlug = game.displayCategory ? toCategorySlug(game.displayCategory) : "";
+  const ignoredBestForTags = new Set([
+    toCategorySlug(primaryCategory.label),
+    primaryCategory.slug,
+    displayCategorySlug,
+    "gamepix",
+    "playgama",
+    "gamedistribution",
+    "responsive",
+    "portrait",
+    "landscape"
+  ]);
+  const explicitTags = (game.tags || [])
+    .filter((tag) => !ignoredBestForTags.has(toCategorySlug(tag)))
+    .slice(0, 2);
+
+  if (explicitTags.length > 0) {
+    return explicitTags.join(" and ").toLowerCase();
+  }
+
+  return defaultBestForByCategory[primaryCategory.slug] || "fast browser play";
+}
+
 function createDefaultSummary(game: GameItem, primaryCategory: CategoryDefinition) {
   return [
-    { label: "Category", value: primaryCategory.label },
-    { label: "Mode", value: game.type },
-    { label: "Platform", value: "Browser, Mobile Web" },
-    { label: "Status", value: game.status === "demo" ? "Catalog Demo" : "Playable Now" }
+    { label: "Category", value: game.displayCategory || primaryCategory.label },
+    { label: "Format", value: defaultFormatValue(game) },
+    { label: "Platform", value: defaultPlatformValue(game) },
+    { label: "Best For", value: defaultBestForValue(game, primaryCategory) }
   ];
 }
 
@@ -925,8 +977,12 @@ export function getListedGames() {
   return catalogGames.filter((game) => game.listed !== false);
 }
 
-export function getIndexableGames() {
+export function getDiscoverableGames() {
   return getListedGames().filter((game) => !game.noindex);
+}
+
+export function getIndexableGames() {
+  return getDiscoverableGames();
 }
 
 export function getGameBySlug(slug: string) {
@@ -938,7 +994,7 @@ export function getGamePixFeedState() {
 }
 
 export function getGamePixFeedGames(limit = 12) {
-  return catalogGames.filter((game) => gamePixFeedSlugSet.has(game.slug)).slice(0, limit);
+  return getDiscoverableGames().filter((game) => gamePixFeedSlugSet.has(game.slug)).slice(0, limit);
 }
 
 export function getHomeShowcaseGames(limit = 4) {
@@ -952,8 +1008,10 @@ export function getHomeShowcaseGames(limit = 4) {
 }
 
 export function getCategoryCatalog() {
+  const discoverableGames = getDiscoverableGames();
+
   return categoryDefinitions.map((category) => {
-    const gameCount = getListedGames().filter((game) => game.categorySlugs.includes(category.slug)).length;
+    const gameCount = discoverableGames.filter((game) => game.categorySlugs.includes(category.slug)).length;
 
     return {
       ...category,
@@ -967,20 +1025,20 @@ export function getCategoryBySlug(slug: string) {
 }
 
 export function getGamesByCategory(slug: string) {
-  return getListedGames()
+  return getDiscoverableGames()
     .filter((game) => game.categorySlugs.includes(slug))
     .sort((a, b) => a.title.localeCompare(b.title));
 }
 
 export function getFeaturedGames(limit = 8) {
-  return getListedGames()
+  return getDiscoverableGames()
     .filter((game) => game.featured)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, limit);
 }
 
 export function getPopularGames(limit = 12) {
-  return getListedGames()
+  return getDiscoverableGames()
     .filter((game) => game.popular)
     .sort((a, b) => {
       if (Number(b.featured) !== Number(a.featured)) {
@@ -993,14 +1051,14 @@ export function getPopularGames(limit = 12) {
 }
 
 export function getEditorPickGames(limit = 8) {
-  return getListedGames()
+  return getDiscoverableGames()
     .filter((game) => game.editorPick)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, limit);
 }
 
 export function getNewGames(limit = 8) {
-  return getListedGames()
+  return getDiscoverableGames()
     .slice()
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, limit);
@@ -1013,9 +1071,9 @@ export function getRelatedGames(currentSlug: string, limit = 8) {
   const preferred = (current.relatedSlugs || [])
     .map((slug) => getGameBySlug(slug))
     .filter((game): game is ResolvedGameItem => Boolean(game))
-    .filter((game) => game.listed !== false && game.slug !== current.slug);
+    .filter((game) => game.listed !== false && !game.noindex && game.slug !== current.slug);
 
-  const rankedFallback = getListedGames()
+  const rankedFallback = getDiscoverableGames()
     .filter((game) => game.slug !== current.slug)
     .filter((game) => !preferred.some((entry) => entry.slug === game.slug))
     .sort((a, b) => {

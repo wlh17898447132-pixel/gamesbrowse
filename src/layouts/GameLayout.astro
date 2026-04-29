@@ -18,10 +18,10 @@ const orientationLabel =
     ? "Landscape"
     : game.orientation === "portrait"
       ? "Portrait"
-      : game.iframeWidth && game.iframeHeight
-        ? game.iframeWidth >= game.iframeHeight
-          ? "Landscape"
-          : "Portrait"
+        : game.iframeWidth && game.iframeHeight
+          ? game.iframeWidth >= game.iframeHeight
+            ? "Landscape"
+            : "Portrait"
         : "Standard";
 const structuredData = [
   {
@@ -64,7 +64,23 @@ const structuredData = [
       "@type": "Organization",
       name: "GamesBrowse"
     }
-  }
+  },
+  ...(game.faq?.length
+    ? [
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: game.faq.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.answer
+            }
+          }))
+        }
+      ]
+    : [])
 ];
 ---
 <BaseLayout

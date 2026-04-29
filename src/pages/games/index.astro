@@ -1,9 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GameCard from "../../components/GameCard.astro";
-import { getCategoryCatalog, getGamePixFeedState, getListedGames } from "../../data/games";
+import { getCategoryCatalog, getDiscoverableGames, getGamePixFeedState } from "../../data/games";
 
-const games = getListedGames();
+const games = getDiscoverableGames();
 const categories = getCategoryCatalog();
 const gamePixFeedState = getGamePixFeedState();
 

@@ -12,21 +12,25 @@ const {
 
 const origin = site.url.endsWith("/") ? site.url : `${site.url}/`;
 const toAbsolute = (value) => new URL(value.startsWith("/") ? value.slice(1) : value, origin).toString();
-const canonicalUrl = canonicalPath === "/" ? origin : toAbsolute(canonicalPath);
+const canonicalUrl =
+  typeof canonicalPath === "string" && canonicalPath.length > 0
+    ? canonicalPath === "/"
+      ? origin
+      : toAbsolute(canonicalPath)
+    : null;
 const imageUrl = toAbsolute(image);
-const shouldExposeCanonical = !noindex;
 ---
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="robots" content={noindex ? "noindex,nofollow" : "index,follow,max-image-preview:large"} />
-{shouldExposeCanonical && <link rel="canonical" href={canonicalUrl} />}
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 <meta property="og:type" content={type} />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-{shouldExposeCanonical && <meta property="og:url" content={canonicalUrl} />}
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 <meta property="og:image" content={imageUrl} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
