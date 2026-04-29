@@ -877,3 +877,4 @@ sharethrough.com, UvcAx8IL, RESELLER, d53b998a7bd4ecd2
 sonobi.com, 296bf9795d, DIRECT, d1a215d9eb5aee9e
 video.unrulymedia.com, 919139201, RESELLER
 rubiconproject.com, 13380, RESELLER, 0bfd66d529a55807
+google.com, pub-9940066146901105, DIRECT, f08c47fec0942fa0

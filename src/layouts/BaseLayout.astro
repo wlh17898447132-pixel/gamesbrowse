@@ -50,6 +50,12 @@ const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredD
       type={type}
       noindex={noindex}
     />
+    <script
+      is:inline
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9940066146901105"
+      crossorigin="anonymous"
+    ></script>
     {pageStructuredData.map((entry) => (
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
