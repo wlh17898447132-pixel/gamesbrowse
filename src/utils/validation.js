@@ -1,4 +1,5 @@
 // Input validation and sanitization utilities
+import { SORT_OPTIONS, MAX_LENGTHS, CATEGORY_FILTER } from '../constants/index.ts';
 
 /**
  * Validates and sanitizes search query input
@@ -15,7 +16,7 @@ export function sanitizeSearchQuery(query) {
   const sanitized = withoutTags.replace(/[<>\"'`]/g, '');
 
   // Trim and limit length
-  return sanitized.trim().slice(0, 100);
+  return sanitized.trim().slice(0, MAX_LENGTHS.SEARCH_QUERY);
 }
 
 /**
@@ -25,7 +26,7 @@ export function sanitizeSearchQuery(query) {
  * @returns {string} Valid category slug or 'all'
  */
 export function validateCategory(category, allowedCategories) {
-  if (typeof category !== 'string') return 'all';
+  if (typeof category !== 'string') return CATEGORY_FILTER.ALL;
 
   const sanitized = category.toLowerCase().trim();
 
@@ -34,7 +35,7 @@ export function validateCategory(category, allowedCategories) {
     return sanitized;
   }
 
-  return 'all';
+  return CATEGORY_FILTER.ALL;
 }
 
 /**
@@ -43,9 +44,9 @@ export function validateCategory(category, allowedCategories) {
  * @returns {string} Valid sort value or 'featured'
  */
 export function validateSort(sort) {
-  const allowedSorts = ['featured', 'newest', 'title'];
+  const allowedSorts = Object.values(SORT_OPTIONS);
 
-  if (typeof sort !== 'string') return 'featured';
+  if (typeof sort !== 'string') return SORT_OPTIONS.FEATURED;
 
   const sanitized = sort.toLowerCase().trim();
 
@@ -53,7 +54,7 @@ export function validateSort(sort) {
     return sanitized;
   }
 
-  return 'featured';
+  return SORT_OPTIONS.FEATURED;
 }
 
 /**
@@ -84,7 +85,7 @@ export function validateGameSlug(slug) {
   // Game slugs should only contain lowercase letters, numbers, and hyphens
   const slugPattern = /^[a-z0-9-]+$/;
 
-  if (slugPattern.test(slug) && slug.length <= 100) {
+  if (slugPattern.test(slug) && slug.length <= MAX_LENGTHS.GAME_SLUG) {
     return slug;
   }
 
