@@ -63,15 +63,13 @@ const fallbackHref = frameSrc;
   )}
 </div>
 
-<script>
-  import { initGameEmbedFrame, initFullscreenHandler } from '/scripts/game-embed.js';
-
-  const frameShellId = `frame-shell-${document.currentScript?.getAttribute('data-frame-id')}`;
-  initGameEmbedFrame(frameShellId);
-  initFullscreenHandler();
-</script>
-
+<script is:inline src="/scripts/game-embed.js"></script>
 <script is:inline define:vars={{ frameShellId }}>
-  document.currentScript.setAttribute('data-frame-id', frameShellId.replace('frame-shell-', ''));
+  if (typeof initGameEmbedFrame === 'function') {
+    initGameEmbedFrame(frameShellId);
+  }
+  if (typeof initFullscreenHandler === 'function') {
+    initFullscreenHandler();
+  }
 </script>
 

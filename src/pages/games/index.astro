@@ -117,8 +117,10 @@ const initialGames = games
     </div>
   </section>
 
-  <script>
-    import { initGameCatalog } from '/scripts/game-catalog.js';
-    initGameCatalog();
+  <script is:inline src="/scripts/game-catalog.js"></script>
+  <script is:inline>
+    if (typeof initGameCatalog === 'function') {
+      initGameCatalog();
+    }
   </script>
 </BaseLayout>
