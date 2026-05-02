@@ -3,6 +3,7 @@ import "../styles/global.css";
 import SEOHead from "../components/SEOHead.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import CookieConsent from "../components/CookieConsent.astro";
 import { site } from "../data/site";
 
 const {
@@ -42,19 +43,6 @@ const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredD
 <!doctype html>
 <html lang="en">
   <head>
-    <script
-      is:inline
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-KD1LZLJL4H"
-    ></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-KD1LZLJL4H");
-    </script>
     <SEOHead
       title={title}
       description={description}
@@ -63,12 +51,6 @@ const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredD
       type={type}
       noindex={noindex}
     />
-    <script
-      is:inline
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9940066146901105"
-      crossorigin="anonymous"
-    ></script>
     {pageStructuredData.map((entry) => (
       <script type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
@@ -81,6 +63,7 @@ const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredD
       </main>
       <SiteFooter />
     </div>
+    <CookieConsent />
   </body>
 </html>
 

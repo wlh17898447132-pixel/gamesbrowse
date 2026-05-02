@@ -1,3 +1,6 @@
+http://gamesbrowse.online/* https://gamesbrowse.online/:splat 301!
+http://www.gamesbrowse.online/* https://gamesbrowse.online/:splat 301!
+
 /index.html / 301
 /category /category/ 301
 /category/:slug /category/:slug/ 301

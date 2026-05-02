@@ -2,10 +2,21 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import GameCard from "../../components/GameCard.astro";
 import { getCategoryCatalog, getDiscoverableGames, getGamePixFeedState } from "../../data/games";
+import { sanitizeSearchQuery, validateCategory, validateSort } from "../../utils/validation";
 
 const games = getDiscoverableGames();
 const categories = getCategoryCatalog();
 const gamePixFeedState = getGamePixFeedState();
+
+// Validate URL parameters
+const urlParams = Astro.url.searchParams;
+const rawQuery = urlParams.get("q") || "";
+const rawCategory = urlParams.get("category") || "all";
+const rawSort = urlParams.get("sort") || "featured";
+
+const validatedQuery = sanitizeSearchQuery(rawQuery);
+const validatedCategory = validateCategory(rawCategory, categories.map(c => c.slug));
+const validatedSort = validateSort(rawSort);
 
 const initialGames = games
   .slice()
@@ -117,9 +128,26 @@ const initialGames = games
     if (grid && searchInput && categoryFilter && sortSelect && countTarget && emptyState) {
       const items = Array.from(grid.querySelectorAll("[data-game-item]"));
       const params = new URLSearchParams(window.location.search);
-      const initialQuery = params.get("q") || "";
-      const initialCategory = params.get("category") || "all";
-      const initialSort = params.get("sort") || "featured";
+
+      // Sanitize URL parameters
+      const sanitizeInput = (str) => {
+        if (typeof str !== 'string') return '';
+        return str.replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').trim().slice(0, 100);
+      };
+
+      const validateCategory = (cat) => {
+        const allowed = Array.from(categoryFilter.options).map(opt => opt.value);
+        return allowed.includes(cat) ? cat : 'all';
+      };
+
+      const validateSort = (sort) => {
+        const allowed = ['featured', 'newest', 'title'];
+        return allowed.includes(sort) ? sort : 'featured';
+      };
+
+      const initialQuery = sanitizeInput(params.get("q") || "");
+      const initialCategory = validateCategory(params.get("category") || "all");
+      const initialSort = validateSort(params.get("sort") || "featured");
 
       searchInput.value = initialQuery;
       categoryFilter.value = initialCategory;
@@ -142,22 +170,26 @@ const initialGames = games
       const updateUrl = (query, category, sort) => {
         const next = new URL(window.location.href);
 
-        if (query) next.searchParams.set("q", query);
+        const sanitizedQuery = sanitizeInput(query);
+        const validatedCategory = validateCategory(category);
+        const validatedSort = validateSort(sort);
+
+        if (sanitizedQuery) next.searchParams.set("q", sanitizedQuery);
         else next.searchParams.delete("q");
 
-        if (category && category !== "all") next.searchParams.set("category", category);
+        if (validatedCategory && validatedCategory !== "all") next.searchParams.set("category", validatedCategory);
         else next.searchParams.delete("category");
 
-        if (sort && sort !== "featured") next.searchParams.set("sort", sort);
+        if (validatedSort && validatedSort !== "featured") next.searchParams.set("sort", validatedSort);
         else next.searchParams.delete("sort");
 
         history.replaceState({}, "", next);
       };
 
       const applyFilters = () => {
-        const query = searchInput.value.trim().toLowerCase();
-        const category = categoryFilter.value;
-        const sort = sortSelect.value;
+        const query = sanitizeInput(searchInput.value);
+        const category = validateCategory(categoryFilter.value);
+        const sort = validateSort(sortSelect.value);
 
         const visibleItems = items.filter((item) => {
           const matchesQuery =
