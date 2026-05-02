@@ -4,23 +4,21 @@ import GameCard from "../components/GameCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import {
   getCategoryCatalog,
-  getEditorPickGames,
-  getFeaturedGames,
   getGameBySlug,
-  getGamePixFeedGames,
-  getGamePixFeedState,
   getHomeShowcaseGames,
   getNewGames,
-  getPopularGames
+  getDiscoverableGames
 } from "../data/games";
 
-const gamePixFeedState = getGamePixFeedState();
 const buckshotGame = getGameBySlug("buckshot-roulette");
 const heroGames = getHomeShowcaseGames(4);
-const gamePixGames = getGamePixFeedGames(12);
-const featuredGames = getFeaturedGames(6);
-const editorPickGames = getEditorPickGames(4);
-const popularGames = getPopularGames(6);
+const allLiveGames = getDiscoverableGames();
+
+// Combine featured, popular, and editor picks into one "Hot Games" section
+const hotGames = allLiveGames
+  .filter(game => game.featured || game.popular || game.editorPick)
+  .slice(0, 12);
+
 const newGames = getNewGames(6);
 const categories = getCategoryCatalog();
 const popularCategories = categories.filter((category) => category.gameCount > 0).slice(0, 4);
@@ -37,8 +35,8 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
           <span class="eyebrow">GamesBrowse</span>
           <h1>Play Free Online Games Instantly</h1>
           <p class="lead">
-            Discover responsive Playgama, GamePix, and browser games on GamesBrowse. Open a game
-            card, jump into the detail page, and start playing without leaving the site.
+            Discover browser games on GamesBrowse. Open a game card, jump into the detail page,
+            and start playing without leaving the site.
           </p>
           <div class="button-row">
             {buckshotGame ? (
@@ -46,7 +44,7 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
             ) : (
               <a href="/games/" class="button button-primary">Browse Games</a>
             )}
-            <a href="/games/" class="button button-secondary">Browse Games</a>
+            <a href="/games/" class="button button-secondary">All Games</a>
           </div>
         </div>
 
@@ -83,80 +81,20 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
     </div>
   </section>
 
-  <section class="page-section" id="play-free-games">
+  <section class="page-section" id="hot-games">
     <div class="container stack">
       <div class="section-heading">
         <div class="stack">
-          <span class="kicker">GamePix Feed</span>
-          <h2>Play Free Online Games</h2>
+          <span class="kicker">Hot Games</span>
+          <h2>Trending & Featured</h2>
           <p class="muted">
-            Featured partner embeds and browser titles pulled into the GamesBrowse catalog with
-            responsive detail pages and embedded play.
+            Popular picks, featured games, and editor's choices all in one place.
           </p>
         </div>
         <a href="/games/" class="button button-secondary">All Games</a>
       </div>
-
-      {gamePixFeedState.available ? (
-        <div class="game-grid">
-          {gamePixGames.map((game) => <GameCard game={game} />)}
-        </div>
-      ) : (
-        <div class="panel stack empty-state">
-          <h2>Games are temporarily unavailable. Please try again later.</h2>
-          <p class="muted">
-            The GamePix feed did not respond during the last build, so the homepage feed section is
-            temporarily empty.
-          </p>
-        </div>
-      )}
-    </div>
-  </section>
-
-  <section class="page-section" id="featured-games">
-    <div class="container stack">
-      <div class="section-heading">
-        <div class="stack">
-          <span class="kicker">Featured Games</span>
-          <h2>Featured Picks</h2>
-          <p class="muted">Highlighted games from the current GamesBrowse catalog.</p>
-        </div>
-        <a href="/games/" class="button button-secondary">All Games</a>
-      </div>
       <div class="game-grid">
-        {featuredGames.map((game) => <GameCard game={game} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section" id="editors-picks">
-    <div class="container stack">
-      <div class="section-heading">
-        <div class="stack">
-          <span class="kicker">Editor&apos;s Picks</span>
-          <h2>Editor&apos;s Picks</h2>
-          <p class="muted">Curated highlights from the current GamesBrowse catalog.</p>
-        </div>
-        <a href="/games/?sort=featured" class="button button-secondary">Browse Picks</a>
-      </div>
-      <div class="game-grid">
-        {editorPickGames.map((game) => <GameCard game={game} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section" id="popular-games">
-    <div class="container stack">
-      <div class="section-heading">
-        <div class="stack">
-          <span class="kicker">Popular Games</span>
-          <h2>Popular Games</h2>
-          <p class="muted">A quick mix of portal favorites, replayable picks, and high-interest demos.</p>
-        </div>
-        <a href="/games/?sort=featured" class="button button-secondary">Browse Popular</a>
-      </div>
-      <div class="game-grid">
-        {popularGames.map((game) => <GameCard game={game} />)}
+        {hotGames.map((game) => <GameCard game={game} />)}
       </div>
     </div>
   </section>
@@ -166,10 +104,10 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
       <div class="section-heading">
         <div class="stack">
           <span class="kicker">New Games</span>
-          <h2>New Games</h2>
-          <p class="muted">Latest additions across playable entries and fresh catalog previews.</p>
+          <h2>Latest Additions</h2>
+          <p class="muted">Fresh games added to the catalog.</p>
         </div>
-        <a href="/games/?sort=newest" class="button button-secondary">See New Games</a>
+        <a href="/games/?sort=newest" class="button button-secondary">See All New</a>
       </div>
       <div class="game-grid">
         {newGames.map((game) => <GameCard game={game} />)}
@@ -182,8 +120,8 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
       <div class="section-heading">
         <div class="stack">
           <span class="kicker">Browse by Category</span>
-          <h2>Browse by Category</h2>
-          <p class="muted">Arcade, puzzle, racing, reflex, and more, all organized for fast discovery.</p>
+          <h2>Game Categories</h2>
+          <p class="muted">Arcade, puzzle, racing, reflex, and more.</p>
         </div>
         <a href="/category/" class="button button-secondary">All Categories</a>
       </div>
@@ -199,19 +137,16 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
         <span class="kicker">About GamesBrowse</span>
         <h2>About GamesBrowse</h2>
         <p class="muted">
-          GamesBrowse is a lightweight online game portal for free browser games. You can explore
-          arcade, puzzle, racing, reflex, and casual games without installing anything. Our goal is
-          to make it easy to find a game, start playing quickly, and discover more games after each
-          session.
+          GamesBrowse is a lightweight online game portal for free browser games. Explore
+          arcade, puzzle, racing, reflex, and casual games without installing anything.
         </p>
       </section>
 
       <section class="panel stack">
         <span class="kicker">Popular Categories</span>
-        <h2>Popular Categories</h2>
+        <h2>Start Here</h2>
         <p class="muted">
-          Start with the categories players usually browse first, then jump into game detail pages
-          from there.
+          Jump into the most popular categories.
         </p>
         <div class="tag-list">
           {popularCategories.map((category) => (
