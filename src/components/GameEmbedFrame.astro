@@ -38,7 +38,7 @@ const fallbackHref = frameSrc;
           class="game-frame embed-frame"
           src={frameSrc}
           title={game.title}
-          loading="eager"
+          loading="lazy"
           allow={game.iframeAllow || "autoplay; fullscreen"}
           sandbox={game.iframeSandbox}
           scrolling="none"
@@ -71,7 +71,7 @@ const fallbackHref = frameSrc;
   if (frame && loading) {
     const slowLoadTimer = window.setTimeout(() => {
       loading.textContent = "Still loading... If nothing appears, use the source link below.";
-    }, 10000);
+    }, 5000);
 
     frame.addEventListener(
       "load",
