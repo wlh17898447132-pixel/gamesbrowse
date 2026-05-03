@@ -11,12 +11,14 @@ export const staticSearchPages = [
 ];
 
 export function getSitemapEntries() {
-  const categoryEntries = getCategoryCatalog().map((category) => ({
-    path: `/category/${category.slug}/`,
-    changefreq: "weekly",
-    priority: "0.8",
-    indexable: true
-  }));
+  const categoryEntries = getCategoryCatalog()
+    .filter((category) => category.indexable)
+    .map((category) => ({
+      path: `/category/${category.slug}/`,
+      changefreq: "weekly",
+      priority: "0.8",
+      indexable: true
+    }));
 
   const gameEntries = getIndexableGames()
     .map((game) => ({

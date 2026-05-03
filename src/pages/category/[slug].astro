@@ -15,6 +15,7 @@ export function getStaticPaths() {
 const { category, games } = Astro.props;
 const title = `${category.label} Games - Play Free Online | GamesBrowse`;
 const description = `Play free ${category.label.toLowerCase()} games online on GamesBrowse. Browse free browser games and start playing instantly.`;
+const noindex = !category.indexable;
 ---
 <CategoryPage
   category={category}
@@ -22,4 +23,5 @@ const description = `Play free ${category.label.toLowerCase()} games online on G
   title={title}
   description={description}
   canonicalPath={`/category/${category.slug}/`}
+  noindex={noindex}
 />

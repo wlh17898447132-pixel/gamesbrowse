@@ -28,6 +28,11 @@ export type CategoryDefinition = {
   tone: string;
 };
 
+export type CategoryCatalogEntry = CategoryDefinition & {
+  gameCount: number;
+  indexable: boolean;
+};
+
 export type GameItem = {
   externalId?: string;
   title: string;
@@ -102,6 +107,7 @@ export type ResolvedGameItem = Omit<GameItem, "category" | "categories" | "instr
 };
 
 export const SITE_URL = "https://gamesbrowse.online";
+export const MIN_CATEGORY_GAMES_FOR_INDEX = 2;
 
 export const categoryDefinitions: CategoryDefinition[] = [
   {
@@ -564,6 +570,10 @@ export function getGamePixFeedGames(limit = 12) {
   return getDiscoverableGames().filter((game) => gamePixFeedSlugSet.has(game.slug)).slice(0, limit);
 }
 
+export function shouldIndexCategory(gameCount: number) {
+  return gameCount >= MIN_CATEGORY_GAMES_FOR_INDEX;
+}
+
 export function getHomeShowcaseGames(limit = 4) {
   const showcase = [
     getGameBySlug("buckshot-roulette"),
@@ -574,7 +584,7 @@ export function getHomeShowcaseGames(limit = 4) {
   return Array.from(new Map(showcase.map((game) => [game.slug, game])).values()).slice(0, limit);
 }
 
-export function getCategoryCatalog() {
+export function getCategoryCatalog(): CategoryCatalogEntry[] {
   const discoverableGames = getDiscoverableGames();
 
   return categoryDefinitions.map((category) => {
@@ -582,7 +592,8 @@ export function getCategoryCatalog() {
 
     return {
       ...category,
-      gameCount
+      gameCount,
+      indexable: shouldIndexCategory(gameCount)
     };
   });
 }
