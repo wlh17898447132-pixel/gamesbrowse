@@ -107,7 +107,7 @@ const popularCategories = categories.filter((category) => category.gameCount > 0
           <h2>Latest Additions</h2>
           <p class="muted">Fresh games added to the catalog.</p>
         </div>
-        <a href="/games/?sort=newest" class="button button-secondary">See All New</a>
+        <a href="/games/" class="button button-secondary">See All New</a>
       </div>
       <div class="game-grid">
         {newGames.map((game) => <GameCard game={game} />)}
