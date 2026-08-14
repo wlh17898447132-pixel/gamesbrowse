@@ -2,23 +2,8 @@ http://gamesbrowse.online/* https://gamesbrowse.online/:splat 301!
 http://www.gamesbrowse.online/* https://gamesbrowse.online/:splat 301!
 
 /index.html / 301
-/category /category/ 301
-/category/:slug /category/:slug/ 301
-/category/:slug/index.html /category/:slug/ 301
-/categories/ /category/ 301
-/categories /category/ 301
-/categories/:slug/ /category/:slug/ 301
-/categories/index.html /category/ 301
-/categories/:slug /category/:slug/ 301
-/categories/:slug/index.html /category/:slug/ 301
-/games /games/ 301
-/games/index.html /games/ 301
-/games/:slug /games/:slug/ 301
-/games/:slug/index.html /games/:slug/ 301
 /about /about/ 301
 /about/index.html /about/ 301
-/contact /contact/ 301
-/contact/index.html /contact/ 301
 /privacy-policy /privacy-policy/ 301
 /privacy-policy/index.html /privacy-policy/ 301
 /terms /terms/ 301

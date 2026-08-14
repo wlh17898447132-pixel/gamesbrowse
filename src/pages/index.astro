@@ -1,161 +1,97 @@
 ---
-import CategoryCard from "../components/CategoryCard.astro";
-import GameCard from "../components/GameCard.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import {
-  getCategoryCatalog,
-  getGameBySlug,
-  getHomeShowcaseGames,
-  getNewGames,
-  getDiscoverableGames
-} from "../data/games";
+import { firstWaveGuides, site } from "../data/site";
 
-const buckshotGame = getGameBySlug("buckshot-roulette");
-const heroGames = getHomeShowcaseGames(4);
-const allLiveGames = getDiscoverableGames();
-
-// Combine featured, popular, and editor picks into one "Hot Games" section
-const hotGames = allLiveGames
-  .filter(game => game.featured || game.popular || game.editorPick)
-  .slice(0, 12);
-
-const newGames = getNewGames(6);
-const categories = getCategoryCatalog();
-const popularCategories = categories.filter((category) => category.gameCount > 0).slice(0, 4);
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url }
+    ]
+  }
+];
 ---
 <BaseLayout
-  title="GamesBrowse - Play Free Online Browser Games"
-  description="Play free online browser games on GamesBrowse with responsive Playgama and GamePix embeds, clean detail pages, and instant access across desktop and mobile."
+  title="Chaos Front Guide | Verified Strategy Notes"
+  description="A Chaos Front guide desk for reproducible Demo and release testing, dated sources, and practical recovery paths."
   canonicalPath="/"
+  structuredData={structuredData}
 >
-  <section class="page-section page-section-hero">
+  <section class="page-section page-intro">
     <div class="container">
-      <div class="hero-panel portal-hero-grid">
-        <div class="hero-copy hero-copy-wide">
-          <span class="eyebrow">GamesBrowse</span>
-          <h1>Play Free Online Games Instantly</h1>
+      <div class="intro-grid">
+        <div class="stack intro-copy">
+          <span class="eyebrow">Player reference desk</span>
+          <h1>Chaos Front Guide</h1>
           <p class="lead">
-            Discover browser games on GamesBrowse. Open a game card, jump into the detail page,
-            and start playing without leaving the site.
+            A focused guide site for Chaos Front. Published notes are grounded in a named game
+            build, repeatable conditions, original captures, and a dated source record.
           </p>
           <div class="button-row">
-            {buckshotGame ? (
-              <a href={buckshotGame.detailUrl} class="button button-primary">Play Buckshot Roulette</a>
-            ) : (
-              <a href="/games/" class="button button-primary">Browse Games</a>
-            )}
-            <a href="/games/" class="button button-secondary">All Games</a>
+            <a class="button button-primary" href={site.steamUrl} target="_blank" rel="noreferrer">
+              Official Steam Page
+            </a>
+            <a class="button button-secondary" href="/about/">How We Verify</a>
           </div>
         </div>
-
-        <div class="hero-showcase">
-          {heroGames.map((game) => <GameCard game={game} variant="compact" />)}
-        </div>
+        <aside class="publication-note" aria-label="Publication status">
+          <span class="kicker">Current publication state</span>
+          <p>
+            The game guide archive is being prepared. No gameplay recommendation is published
+            until it has a reproducible test record.
+          </p>
+        </aside>
       </div>
     </div>
   </section>
 
-  <section class="page-section tight" id="search-games">
-    <div class="container">
-      <div class="panel search-panel">
+  <section class="page-section" id="guide-desk">
+    <div class="container stack">
+      <div class="section-heading">
         <div class="stack">
-          <span class="kicker">Search Games</span>
-          <h2>Find a game fast</h2>
+          <span class="kicker">First wave</span>
+          <h2>Guide desk</h2>
           <p class="muted">
-            Search by title or jump into a category to keep browsing.
+            These are the first four research tracks. They will become public guides only after
+            each practical conclusion is supported by an evidence record.
           </p>
         </div>
-        <form action="/games/" class="search-form" role="search">
-          <label class="sr-only" for="home-search">Search games</label>
-          <input id="home-search" name="q" type="search" placeholder="Search games..." />
-          <button type="submit" class="button button-primary">Search</button>
-        </form>
-        <div class="tag-list">
-          {categories.map((category) => (
-            <a class="tag" href={`/category/${category.slug}/`}>
-              {category.label}
-            </a>
-          ))}
-        </div>
+      </div>
+      <div class="guide-grid">
+        {firstWaveGuides.map((guide) => (
+          <article class="guide-card">
+            <span class="guide-status">{guide.status}</span>
+            <h3>{guide.title}</h3>
+            <p>{guide.intent}</p>
+          </article>
+        ))}
       </div>
     </div>
   </section>
 
-  <section class="page-section" id="hot-games">
+  <section class="page-section rule-section" id="standards">
     <div class="container stack">
       <div class="section-heading">
         <div class="stack">
-          <span class="kicker">Hot Games</span>
-          <h2>Trending & Featured</h2>
-          <p class="muted">
-            Popular picks, featured games, and editor's choices all in one place.
-          </p>
+          <span class="kicker">Editorial standard</span>
+          <h2>What qualifies a guide</h2>
         </div>
-        <a href="/games/" class="button button-secondary">All Games</a>
       </div>
-      <div class="game-grid">
-        {hotGames.map((game) => <GameCard game={game} />)}
+      <div class="standards-grid">
+        <section>
+          <h3>Named build</h3>
+          <p>Every recommendation identifies the game version and its most recent verification date.</p>
+        </section>
+        <section>
+          <h3>Repeatable test</h3>
+          <p>Readers get the route, condition, or decision sequence needed to reproduce the result.</p>
+        </section>
+        <section>
+          <h3>Failure path</h3>
+          <p>Each guide documents known risks, counterexamples, and a practical fallback where one exists.</p>
+        </section>
       </div>
-    </div>
-  </section>
-
-  <section class="page-section" id="new-games">
-    <div class="container stack">
-      <div class="section-heading">
-        <div class="stack">
-          <span class="kicker">New Games</span>
-          <h2>Latest Additions</h2>
-          <p class="muted">Fresh games added to the catalog.</p>
-        </div>
-        <a href="/games/" class="button button-secondary">See All New</a>
-      </div>
-      <div class="game-grid">
-        {newGames.map((game) => <GameCard game={game} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section" id="categories">
-    <div class="container stack">
-      <div class="section-heading">
-        <div class="stack">
-          <span class="kicker">Browse by Category</span>
-          <h2>Game Categories</h2>
-          <p class="muted">Arcade, puzzle, racing, reflex, and more.</p>
-        </div>
-        <a href="/category/" class="button button-secondary">All Categories</a>
-      </div>
-      <div class="category-grid">
-        {categories.map((category) => <CategoryCard category={category} />)}
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section">
-    <div class="container portal-info-grid">
-      <section class="panel stack">
-        <span class="kicker">About GamesBrowse</span>
-        <h2>About GamesBrowse</h2>
-        <p class="muted">
-          GamesBrowse is a lightweight online game portal for free browser games. Explore
-          arcade, puzzle, racing, reflex, and casual games without installing anything.
-        </p>
-      </section>
-
-      <section class="panel stack">
-        <span class="kicker">Popular Categories</span>
-        <h2>Start Here</h2>
-        <p class="muted">
-          Jump into the most popular categories.
-        </p>
-        <div class="tag-list">
-          {popularCategories.map((category) => (
-            <a class="tag" href={`/category/${category.slug}/`}>
-              {category.label}
-            </a>
-          ))}
-        </div>
-      </section>
     </div>
   </section>
 </BaseLayout>

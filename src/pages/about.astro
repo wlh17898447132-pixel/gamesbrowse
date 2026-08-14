@@ -2,44 +2,46 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout
-  title="About GamesBrowse"
-  description="Learn what GamesBrowse focuses on, how the portal is organized, and how native and embedded games fit into the site."
+  title="About Chaos Front Guide"
+  description="Learn how Chaos Front Guide verifies gameplay notes, records sources, and decides what is ready to publish."
   canonicalPath="/about/"
 >
   <section class="page-section">
     <div class="container stack">
-      <div class="hero-panel stack">
+      <div class="page-header stack">
         <span class="eyebrow">About</span>
-        <h1>About GamesBrowse</h1>
+        <h1>About Chaos Front Guide</h1>
         <p class="lead">
-          GamesBrowse is a lightweight portal for free browser games, designed to help players find
-          a game quickly and jump into play without extra setup.
+          Chaos Front Guide is an English-first reference site for one game. It is built to answer
+          player questions with observed results instead of generic game-catalog copy.
         </p>
       </div>
 
-      <div class="portal-info-grid">
-        <section class="panel stack">
-          <h2>What the site focuses on</h2>
-          <p class="muted">
-            GamesBrowse keeps the experience clean: game detail pages, category routes, simple
-            discovery modules, and layouts that work well on desktop and mobile.
+      <div class="content-grid">
+        <section class="article-copy stack">
+          <h2>Publication policy</h2>
+          <p>
+            A guide must state the tested game build, the date of verification, the relevant source
+            or original capture, the exact conclusion, and the conditions used to reach it.
           </p>
-          <p class="muted">
-            The goal is not to bury players under heavy navigation or long explanations. The portal
-            is built around quick discovery, fast loading, and easy replay.
+          <p>
+            When a conclusion depends on a mission branch, a squad setup, a difficulty setting, or
+            an unclear Demo limitation, the page will say so. Unsupported claims do not get a
+            placeholder route or a search-optimized list page.
           </p>
         </section>
 
-        <section class="panel stack">
-          <h2>How the catalog is structured</h2>
-          <p class="muted">
-            Each game has its own route, metadata, and category placement. Native mini-games and
-            embedded iframe games share the same overall page structure so the site can grow without
-            fragmenting the experience.
+        <section class="article-copy stack">
+          <h2>Source hierarchy</h2>
+          <p>
+            Repeatable in-game testing and original screenshots come first. Official store and
+            developer material provide release context. Community reports may point to a test, but
+            are not treated as confirmation on their own.
           </p>
-          <p class="muted">
-            Categories, featured sections, popular modules, and newest additions all come from one
-            shared data source, which makes the portal easier to maintain as more games are added.
+          <p>
+            The guide index expands only when enough evidence exists to maintain a useful, dated
+            page. This keeps the site focused on Chaos Front rather than becoming a general game
+            catalog.
           </p>
         </section>
       </div>

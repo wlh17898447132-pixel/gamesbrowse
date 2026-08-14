@@ -1,5 +1,4 @@
-import { site } from "../data/site";
-import { getSitemapEntries } from "../data/search";
+import { indexablePages, site } from "../data/site";
 
 export const prerender = true;
 
@@ -20,7 +19,7 @@ function escapeXml(value) {
 }
 
 export function GET() {
-  const urls = getSitemapEntries()
+  const urls = indexablePages
     .map(
       (entry) => `  <url>
     <loc>${escapeXml(toAbsolute(entry.path))}</loc>

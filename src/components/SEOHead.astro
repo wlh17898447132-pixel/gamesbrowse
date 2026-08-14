@@ -5,7 +5,7 @@ const {
   title = site.title,
   description = site.description,
   canonicalPath = "/",
-  image = "/og/default-share.svg",
+  image,
   type = "website",
   noindex = false
 } = Astro.props;
@@ -18,7 +18,7 @@ const canonicalUrl =
       ? origin
       : toAbsolute(canonicalPath)
     : null;
-const imageUrl = toAbsolute(image);
+const imageUrl = image ? toAbsolute(image) : null;
 ---
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -31,10 +31,8 @@ const imageUrl = toAbsolute(image);
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
-<meta property="og:image" content={imageUrl} />
-<meta name="twitter:card" content="summary_large_image" />
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+<meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={imageUrl} />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-
+{imageUrl && <meta name="twitter:image" content={imageUrl} />}

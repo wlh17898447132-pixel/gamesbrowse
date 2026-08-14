@@ -3,39 +3,25 @@ import "../styles/global.css";
 import SEOHead from "../components/SEOHead.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
-import CookieConsent from "../components/CookieConsent.astro";
 import { site } from "../data/site";
 
 const {
   title = site.title,
   description = site.description,
   canonicalPath = "/",
-  image = "/og/default-share.svg",
+  image,
   type = "website",
   noindex = false,
   structuredData = []
 } = Astro.props;
 
-const origin = site.url.endsWith("/") ? site.url : `${site.url}/`;
 const siteStructuredData = [
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: site.name,
     url: site.url,
-    description: site.description,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${site.url}/games/?q={search_term_string}`,
-      "query-input": "required name=search_term_string"
-    }
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: site.name,
-    url: site.url,
-    logo: new URL("og/default-share.svg", origin).toString()
+    description: site.description
   }
 ];
 const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredData];
@@ -58,12 +44,8 @@ const pageStructuredData = noindex ? [] : [...siteStructuredData, ...structuredD
   <body>
     <div class="site-shell">
       <SiteHeader />
-      <main class="site-main">
-        <slot />
-      </main>
+      <main class="site-main"><slot /></main>
       <SiteFooter />
     </div>
-    <CookieConsent />
   </body>
 </html>
-
