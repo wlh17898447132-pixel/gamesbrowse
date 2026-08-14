@@ -1,47 +1,67 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Method", item: `${site.url}/about/` }
+    ]
+  }
+];
 ---
 <BaseLayout
-  title="About Chaos Front Guide"
-  description="Learn how Chaos Front Guide verifies gameplay notes, records sources, and decides what is ready to publish."
+  title="Chaos Front Guide Method | Verification Policy"
+  description="How Chaos Front Guide verifies gameplay notes, records sources, and decides what is ready to publish or index."
   canonicalPath="/about/"
+  image={site.shareImage}
+  structuredData={structuredData}
 >
   <section class="page-section">
-    <div class="container stack">
-      <div class="page-header stack">
-        <span class="eyebrow">About</span>
-        <h1>About Chaos Front Guide</h1>
+    <div class="container">
+      <div class="page-header">
+        <p class="system-label">EDITORIAL METHOD</p>
+        <h1>Evidence before doctrine</h1>
         <p class="lead">
-          Chaos Front Guide is an English-first reference site for one game. It is built to answer
-          player questions with observed results instead of generic game-catalog copy.
+          Chaos Front Guide is an independent, English-first reference site for one game. We publish
+          observed results instead of generic game-catalog copy or unsupported build lists.
         </p>
       </div>
 
       <div class="content-grid">
-        <section class="article-copy stack">
-          <h2>Publication policy</h2>
+        <section class="article-copy">
+          <p class="system-label">01 / BUILD CONTEXT</p>
+          <h2>Every claim names its conditions</h2>
           <p>
-            A guide must state the tested game build, the date of verification, the relevant source
-            or original capture, the exact conclusion, and the conditions used to reach it.
-          </p>
-          <p>
-            When a conclusion depends on a mission branch, a squad setup, a difficulty setting, or
-            an unclear Demo limitation, the page will say so. Unsupported claims do not get a
-            placeholder route or a search-optimized list page.
+            A guide must identify the tested game build and verification date. When a result depends
+            on a mission branch, squad setup, difficulty setting, or Demo limitation, the page states it.
           </p>
         </section>
-
-        <section class="article-copy stack">
-          <h2>Source hierarchy</h2>
+        <section class="article-copy">
+          <p class="system-label">02 / REPRODUCTION</p>
+          <h2>Readers need a route back to the result</h2>
           <p>
-            Repeatable in-game testing and original screenshots come first. Official store and
-            developer material provide release context. Community reports may point to a test, but
-            are not treated as confirmation on their own.
+            Published recommendations include repeatable steps, original captures, or another direct
+            record of the condition. A community report can suggest a test, but cannot confirm it alone.
           </p>
+        </section>
+        <section class="article-copy">
+          <p class="system-label">03 / FAILURE PATH</p>
+          <h2>Useful advice includes its limits</h2>
           <p>
-            The guide index expands only when enough evidence exists to maintain a useful, dated
-            page. This keeps the site focused on Chaos Front rather than becoming a general game
-            catalog.
+            Each guide records known risks, counterexamples, and a practical alternative when one is
+            available. That is more useful than a universal "best build" claim.
+          </p>
+        </section>
+        <section class="article-copy">
+          <p class="system-label">04 / INDEXING</p>
+          <h2>Only finished pages enter Google’s index</h2>
+          <p>
+            Release information based on official sources can be indexed now. Strategy routes stay out
+            of the sitemap until the evidence above is complete, avoiding thin pages and stale claims.
           </p>
         </section>
       </div>

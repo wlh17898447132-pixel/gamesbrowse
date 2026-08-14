@@ -1,11 +1,18 @@
+---
+import { site } from "../data/site";
+---
 <header class="site-header">
   <div class="container nav-bar">
-    <a href="/" class="nav-brand">Chaos Front <span>Guide</span></a>
+    <a href="/" class="nav-brand" aria-label="Chaos Front Guide home">
+      <span class="nav-brand-main">CHAOS FRONT</span>
+      <span class="nav-brand-sub">FIELD GUIDE</span>
+    </a>
     <nav class="nav-links" aria-label="Primary navigation">
-      <a href="/">Home</a>
-      <a href="/#guide-desk">Guide Desk</a>
-      <a href="/#standards">Standards</a>
-      <a href="/about/">About</a>
+      <a href="/#briefing">Briefing</a>
+      <a href="/release-date/">Release Intel</a>
+      <a href="/#guide-desk">Guide Queue</a>
+      <a href="/about/">Method</a>
+      <a class="nav-steam" href={site.steamUrl} target="_blank" rel="noreferrer">Steam</a>
     </nav>
   </div>
 </header>

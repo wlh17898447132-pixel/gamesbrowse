@@ -23,6 +23,7 @@ export function GET() {
     .map(
       (entry) => `  <url>
     <loc>${escapeXml(toAbsolute(entry.path))}</loc>
+    <lastmod>${entry.lastmod}</lastmod>
     <changefreq>${entry.changefreq}</changefreq>
     <priority>${entry.priority}</priority>
   </url>`

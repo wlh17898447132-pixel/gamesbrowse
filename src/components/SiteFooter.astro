@@ -1,10 +1,18 @@
+---
+import { site } from "../data/site";
+---
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div class="footer-note">Chaos Front Guide. Evidence-led notes for a single game.</div>
-    <div class="nav-links" aria-label="Footer navigation">
-      <a href="/about/">About</a>
+    <div>
+      <div class="footer-brand">CHAOS FRONT / FIELD GUIDE</div>
+      <p class="footer-note">Independent reference notes. Game names and media remain the property of their respective owners.</p>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="/release-date/">Release Intel</a>
+      <a href="/about/">Method</a>
       <a href="/privacy-policy/">Privacy</a>
       <a href="/terms/">Terms</a>
+      <a href={site.steamUrl} target="_blank" rel="noreferrer">Official Steam Page</a>
     </div>
   </div>
 </footer>

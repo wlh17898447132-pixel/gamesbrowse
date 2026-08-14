@@ -1,0 +1,122 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Release Intel", item: `${site.url}/release-date/` }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Chaos Front Release Date, Demo, Languages and PC Requirements",
+    mainEntityOfPage: `${site.url}/release-date/`,
+    dateModified: site.sourceChecked,
+    image: `${site.url}${site.shareImage}`,
+    about: { "@type": "VideoGame", name: "Chaos Front" },
+    isBasedOn: site.steamUrl
+  }
+];
+---
+<BaseLayout
+  title="Chaos Front Release Date, Demo & PC Requirements"
+  description="Chaos Front’s planned Steam release date, Demo status, languages, features, developer, publisher, and PC system requirements."
+  canonicalPath="/release-date/"
+  image={site.shareImage}
+  type="article"
+  structuredData={structuredData}
+>
+  <section class="article-hero">
+    <img src={site.trailerPoster} width="1280" height="720" alt="A green Chaos Front mecha overlooking a blue planet from a starship bay" fetchpriority="high" />
+    <div class="article-hero-shade" aria-hidden="true"></div>
+    <div class="container article-hero-content">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Release Intel</span></nav>
+      <p class="system-label">OFFICIAL RELEASE INTEL</p>
+      <h1>Chaos Front release date, Demo and PC requirements</h1>
+      <p>Last verified against the Steam store listing on August 14, 2026.</p>
+    </div>
+  </section>
+
+  <article class="page-section article-page">
+    <div class="container article-layout">
+      <div class="article-main">
+        <section class="article-block">
+          <h2>Quick answer</h2>
+          <p>
+            Steam lists Chaos Front for a planned release on <strong>{site.releaseDateLabel}</strong> and provides a downloadable Demo.
+            The date and availability can change before launch, so this page links to the official listing for the current status.
+          </p>
+          <a class="button button-primary" href={site.steamUrl} target="_blank" rel="noreferrer">Check current Steam status</a>
+        </section>
+
+        <section class="article-block">
+          <h2>Store facts</h2>
+          <dl class="fact-list">
+            <div><dt>Game</dt><dd>Chaos Front</dd></div>
+            <div><dt>Planned release</dt><dd>{site.releaseDateLabel}</dd></div>
+            <div><dt>Demo</dt><dd>Available from the Steam listing at the time of verification</dd></div>
+            <div><dt>Developer</dt><dd>Han Zhiyu</dd></div>
+            <div><dt>Publisher</dt><dd>ChaosGalaxyStudio</dd></div>
+            <div><dt>Steam genres</dt><dd>Indie, RPG, Strategy</dd></div>
+          </dl>
+        </section>
+
+        <section class="article-block">
+          <h2>Languages and Steam features</h2>
+          <p>
+            Steam currently lists interface and subtitle support for English, Simplified Chinese, Traditional Chinese,
+            Japanese, and Spanish - Latin America. The listing also identifies single-player, captions, Steam Cloud,
+            Remote Play on TV, and Family Sharing support.
+          </p>
+        </section>
+
+        <section class="article-block">
+          <h2>PC requirements listed on Steam</h2>
+          <div class="requirements-grid">
+            <section>
+              <h3>Minimum</h3>
+              <ul>
+                <li>Windows 7 / 8 / 10 / 11</li>
+                <li>Intel i5</li>
+                <li>4 GB RAM</li>
+                <li>GTX 860m</li>
+                <li>2 GB available storage</li>
+              </ul>
+            </section>
+            <section>
+              <h3>Recommended</h3>
+              <ul>
+                <li>Windows 7 / 8 / 10 / 11</li>
+                <li>Intel i5</li>
+                <li>8 GB RAM</li>
+                <li>GTX 1060</li>
+                <li>4 GB available storage</li>
+              </ul>
+            </section>
+          </div>
+        </section>
+
+        <section class="article-block source-block">
+          <h2>Source and update record</h2>
+          <p>
+            Source: <a href={site.steamUrl} target="_blank" rel="noreferrer">Chaos Front on Steam</a>.
+            Last checked: August 14, 2026. This page will be updated when Steam changes the release, Demo,
+            language, feature, or system-requirement information.
+          </p>
+        </section>
+      </div>
+
+      <aside class="article-aside">
+        <p class="system-label">NEXT RESEARCH</p>
+        <h2>Field guides are in verification</h2>
+        <p>Combat, unit composition, mission choices, and early-game priorities will be added only after repeatable testing.</p>
+        <a class="text-link" href="/about/">Read the editorial method <span aria-hidden="true">&rarr;</span></a>
+      </aside>
+    </div>
+  </article>
+</BaseLayout>
