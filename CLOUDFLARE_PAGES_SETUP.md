@@ -18,9 +18,9 @@
 ## Legacy Route Policy
 
 - Add a `301` only for an exact, relevant old-to-new page equivalent.
-- Leave unrelated legacy game and category routes as clean 404 responses.
+- The repository's Pages Functions return `410 Gone` for `/games/*`, `/category/*`, and `/categories/*`.
+- `public/_routes.json` limits function invocation to those legacy prefixes; do not widen it without a clear runtime requirement.
 - Do not direct old catalog URLs to the homepage.
-- If a Cloudflare Pages Function is later introduced for status handling, it may return `410 Gone` for confirmed obsolete game routes.
 
 ## Pre-Deployment Checks
 

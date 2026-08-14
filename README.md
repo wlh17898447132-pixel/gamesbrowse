@@ -23,4 +23,4 @@ Cloudflare Pages should build the default branch with `npm run build` and publis
 
 ## Legacy URLs
 
-Legacy game and category routes have intentionally been removed. They must not redirect to the homepage. After the production URL inventory is exported from Cloudflare and Search Console, add only explicit one-to-one `301` mappings to `public/_redirects`; unrelated routes should remain clean 404s, or use 410 if the Pages architecture adds that capability.
+Legacy game and category routes have intentionally been removed. They do not redirect to the homepage: Cloudflare Pages Functions return `410 Gone` for `/games/*`, `/category/*`, and `/categories/*`. After the production URL inventory is exported from Cloudflare and Search Console, add only explicit one-to-one `301` mappings to `public/_redirects`.

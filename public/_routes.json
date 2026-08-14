@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "include": [
+    "/games",
+    "/games/*",
+    "/category",
+    "/category/*",
+    "/categories",
+    "/categories/*"
+  ],
+  "exclude": []
+}
